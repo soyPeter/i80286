@@ -19,6 +19,11 @@ repositories {
 }
 
 dependencies {
+    // Common libraries
+    implementation(project(":services:libs:common-domain"))
+    implementation(project(":services:libs:common-application"))
+    implementation(project(":services:libs:common-infrastructure"))
+
     // Spring Boot Core
     implementation(libs.bundles.spring.boot)
 
@@ -40,6 +45,7 @@ dependencies {
 
     // Testing
     testImplementation(libs.bundles.testing)
+    testImplementation(project(":services:libs:common-test"))
     testRuntimeOnly(libs.junit.platform.launcher)
 }
 
@@ -52,4 +58,12 @@ dependencyManagement {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.getByName<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
+    enabled = false
+}
+
+tasks.getByName<Jar>("jar") {
+    enabled = true
 }

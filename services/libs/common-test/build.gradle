@@ -1,0 +1,57 @@
+plugins {
+    id 'java-library'
+    id 'org.springframework.boot' apply false
+    id 'io.spring.dependency-management'
+}
+
+group = 'com.company'
+version = '0.0.1-SNAPSHOT'
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencyManagement {
+    imports {
+        mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+        mavenBom 'org.testcontainers:testcontainers-bom:1.19.3'
+    }
+}
+
+dependencies {
+    // Spring Boot Test
+    api 'org.springframework.boot:spring-boot-starter-test'
+    
+    // TestContainers
+    api 'org.testcontainers:junit-jupiter'
+    api 'org.testcontainers:postgresql'
+    api 'org.testcontainers:rabbitmq'
+    
+    // REST Assured
+    api 'io.rest-assured:rest-assured'
+    
+    // WireMock
+    api 'org.wiremock:wiremock:3.3.1'
+    
+    // Common Modules
+    api project(':services:libs:common-domain')
+    api project(':services:libs:common-application')
+    api project(':services:libs:common-infrastructure')
+}
+
+//bootJar {
+//    enabled = false
+//}
+
+jar {
+    enabled = true
+}
+
+test {
+    useJUnitPlatform()
+}

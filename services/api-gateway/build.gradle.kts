@@ -2,7 +2,6 @@ plugins {
     java
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.dependency.management)
-    alias(libs.plugins.flyway)
 }
 
 group = "com.company"
@@ -19,34 +18,31 @@ repositories {
 }
 
 dependencies {
-    // Spring Boot Core
-    implementation(libs.bundles.spring.boot)
-
-    // Spring Data
-    implementation(libs.postgresql)
-    implementation(libs.flyway.core)
-
+    // Spring Cloud Gateway
+    implementation("org.springframework.cloud:spring-cloud-starter-gateway")
+    
     // Spring Cloud Config
     implementation(libs.spring.cloud.starter.config)
-
+    
+    // Spring Boot Actuator
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    
+    // Spring Security
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    
     // Resilience4j
     implementation(libs.bundles.resilience4j)
-
+    
     // Micrometer for metrics and observability
     implementation(libs.micrometer.registry.prometheus)
-
-    // OpenAPI documentation
-    implementation(libs.springdoc.openapi.starter.webmvc.ui)
-
+    
     // Testing
     testImplementation(libs.bundles.testing)
-    testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 dependencyManagement {
     imports {
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:${libs.versions.springCloud.get()}")
-        mavenBom("org.testcontainers:testcontainers-bom:${libs.versions.testcontainers.get()}")
     }
 }
 
