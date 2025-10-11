@@ -45,7 +45,6 @@ dependencies {
 
     // Testing
     testImplementation(libs.bundles.testing)
-    testImplementation(project(":services:libs:common-test"))
     testRuntimeOnly(libs.junit.platform.launcher)
 }
 
