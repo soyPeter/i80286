@@ -20,9 +20,9 @@ include(":services:api-gateway")
 //include("service-registry")
 
 // Build tools
-include("build-tools:checkstyle")
-include("build-tools:spotless")
-include("build-tools:test-common")
+//include("build-tools:checkstyle")
+//include("build-tools:spotless")
+//include("build-tools:test-common")
 
 // Configure project structure
 project(":services:customer-service").projectDir = file("services/customer-service")
@@ -32,6 +32,6 @@ project(":services:libs:common-application").projectDir = file("services/libs/co
 project(":services:libs:common-infrastructure").projectDir = file("services/libs/common-infrastructure")
 project(":services:libs:common-test").projectDir = file("services/libs/common-test")
 project(":services:libs:common-contracts").projectDir = file("services/libs/common-contracts")
-project(":build-tools:checkstyle").projectDir = file("build-tools/checkstyle")
-project(":build-tools:spotless").projectDir = file("build-tools/spotless")
-project(":build-tools:test-common").projectDir = file("build-tools/test-common")
+//project(":build-tools:checkstyle").projectDir = file("build-tools/checkstyle")
+//project(":build-tools:spotless").projectDir = file("build-tools/spotless")
+//project(":build-tools:test-common").projectDir = file("build-tools/test-common")
