@@ -1,4 +1,4 @@
-rootProject.name = "myinvestor-080286"
+rootProject.name = "blueprint-80286"
 
 //// Enable version catalog
 //enableFeaturePreview("VERSION_CATALOGS")
