@@ -1,4 +1,4 @@
-rootProject.name = "myinvestor-08086"
+rootProject.name = "myinvestor-080286"
 
 //// Enable version catalog
 //enableFeaturePreview("VERSION_CATALOGS")

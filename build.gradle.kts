@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.flyway)
 }
 
-group = "com.company"
+group = "io.bitnomio"
 version = "0.0.1-SNAPSHOT"
 
 java {
