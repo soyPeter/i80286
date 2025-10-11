@@ -14,46 +14,6 @@ java {
   }
 }
 
-repositories {
-  mavenCentral()
-  // Add Spring repositories for Spring Cloud Contract
-  maven {
-    url 'https://repo.spring.io/release'
-    mavenContent {
-      releasesOnly()
-    }
-  }
-  maven {
-    url 'https://repo.spring.io/milestone'
-    mavenContent {
-      releasesOnly()
-    }
-  }
-  maven {
-    url 'https://repo.spring.io/snapshot'
-    mavenContent {
-      snapshotsOnly()
-    }
-  }
-  // Add Spring Plugins repository
-  maven {
-    url 'https://repo.spring.io/plugins-release'
-    mavenContent {
-      releasesOnly()
-    }
-  }
-
-  // Add JFrog repository
-  maven {
-    url 'https://jfrog.bintray.com/jfrog-dependencies'
-  }
-
-  // Add repo for resillience4j
-  maven {
-    url = uri("https://oss.sonatype.org/content/repositories/snapshots")
-  }
-}
-
 dependencyManagement {
   imports {
     mavenBom SpringBootPlugin.BOM_COORDINATES

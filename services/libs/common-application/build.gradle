@@ -12,10 +12,6 @@ java {
     }
 }
 
-repositories {
-    mavenCentral()
-}
-
 dependencyManagement {
     imports {
         mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
@@ -25,10 +21,10 @@ dependencyManagement {
 dependencies {
     // Spring Boot Core
     api 'org.springframework.boot:spring-boot-starter'
-    
+
     // Common Domain
     api project(':services:libs:common-domain')
-    
+
     // Testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

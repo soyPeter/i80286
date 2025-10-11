@@ -8,16 +8,6 @@ plugins {
 group = "io.bitnomio"
 version = "0.0.1-SNAPSHOT"
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(25))
-    }
-}
-
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     // Common libraries
     implementation(project(":services:libs:common-domain"))
@@ -46,13 +36,6 @@ dependencies {
     // Testing
     testImplementation(libs.bundles.testing)
     testRuntimeOnly(libs.junit.platform.launcher)
-}
-
-dependencyManagement {
-    imports {
-        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${libs.versions.springCloud.get()}")
-        mavenBom("org.testcontainers:testcontainers-bom:${libs.versions.testcontainers.get()}")
-    }
 }
 
 tasks.withType<Test> {

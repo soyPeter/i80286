@@ -3,6 +3,7 @@
 springBoot = "3.4.5"
 springDependencyManagement = "1.1.7"
 springCloud = "2023.0.0"
+fooJayResolver = "0.5.0"
 
 # Database
 postgresql = "42.7.2"
@@ -91,3 +92,4 @@ testing = [
 spring-boot = { id = "org.springframework.boot", version.ref = "springBoot" }
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "springDependencyManagement" }
 flyway = { id = "org.flywaydb.flyway", version.ref = "flyway" }
+foojay-resolver = { id = "org.gradle.toolchains.foojay-resolver", version.ref = "fooJayResolver" }

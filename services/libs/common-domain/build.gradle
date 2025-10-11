@@ -12,9 +12,6 @@ java {
     }
 }
 
-repositories {
-    mavenCentral()
-}
 
 dependencyManagement {
     imports {
@@ -25,7 +22,7 @@ dependencyManagement {
 dependencies {
     // Java Validation API
     api 'jakarta.validation:jakarta.validation-api'
-    
+
     // Testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
