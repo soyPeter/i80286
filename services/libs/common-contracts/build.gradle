@@ -6,19 +6,6 @@ plugins {
 
 group = 'com.company'
 version = '0.0.1-SNAPSHOT'
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(25)
-    }
-}
-
-dependencyManagement {
-    imports {
-        mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
-        // Add Spring Cloud BOM for managing Spring Cloud dependencies
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2022.0.4'
-    }
-}
 
 dependencies {
     // Testing
