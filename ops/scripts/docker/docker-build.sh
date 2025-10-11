@@ -1,0 +1,14 @@
+#!/bin/bash
+set -e # Exit on error
+
+COMPOSE_FILE="../../docker/local/docker-infra-base.yml"
+echo "Starting docker build with compose file: $COMPOSE_FILE"
+
+docker compose -f "$COMPOSE_FILE" build
+
+if [ $? -ne 0 ]; then
+    echo "Error: docker build failed."
+   exit 1
+fi
+
+echo "Docker build completed."

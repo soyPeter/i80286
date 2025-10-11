@@ -1,0 +1,87 @@
+clone:
+  depth: full
+image: eclipse-temurin:21-jdk-jammy
+definitions:
+  variables:
+    AWS_DEFAULT_REGION: "eu-west-1"
+    AWS_ACCOUNT_ID: "982534394814"
+  caches:
+    gradle-cache: ~/.gradle
+    docker-cache: ~/.docker
+    terraform-cache: /usr/local/bin/terraform
+  services:
+    docker:
+      memory: 3072
+  steps:
+    - step: &unit-test
+        name: Unit Tests
+        caches:
+          - gradle-cache
+        script:
+          - ./gradlew test
+        artifacts:
+          - build/reports/**
+          - build/test-results/**
+    - step: &sonar-cloud
+        name: SonarCloud Analysis
+        caches:
+          - gradle-cache
+        script:
+          - export SONAR_TOKEN="${SONAR_TOKEN}"
+          - ./gradlew sonarqube
+    - step: &terraform-deploy
+        name: Terraform Deploy
+        caches:
+          - terraform-cache
+        script:
+          - apt-get update && apt-get install -y unzip python3 python3-pip git gawk jq
+          - if ! command -v terraform &> /dev/null; then
+            curl -LO https://releases.hashicorp.com/terraform/1.10.1/terraform_1.10.1_linux_amd64.zip &&
+            unzip terraform_1.10.1_linux_amd64.zip &&
+            mv terraform /usr/local/bin/terraform &&
+            export PATH=$PATH:/usr/local/bin/terraform;
+            fi
+          - terraform --version  # Verifica la instalación
+          - chmod +x ./ops/ci/terraform-deploy.sh
+          - export AWS_DEFAULT_REGION="$AWS_DEFAULT_REGION"
+          - export AWS_ACCOUNT_ID="$AWS_ACCOUNT_ID"
+          - ./ops/ci/terraform-deploy.sh
+    - step: &build-and-deploy
+        name: Build and Deploy Services
+        services:
+          - docker
+        caches:
+          - gradle-cache
+          - docker-cache
+          - terraform-cache
+        script:
+          - apt-get update && apt-get install -y unzip python3 python3-pip git gawk jq
+          - if ! command -v terraform &> /dev/null; then
+            curl -LO https://releases.hashicorp.com/terraform/1.10.1/terraform_1.10.1_linux_amd64.zip &&
+            unzip terraform_1.10.1_linux_amd64.zip &&
+            mv terraform /usr/local/bin/terraform &&
+            export PATH=$PATH:/usr/local/bin/terraform;
+            fi
+          - terraform --version  # Verifica la instalación
+          - chmod +x ./ops/scripts/docker/deploy.sh
+          - export AWS_DEFAULT_REGION="$AWS_DEFAULT_REGION"
+          - export AWS_ACCOUNT_ID="$AWS_ACCOUNT_ID"
+          - ./ops/scripts/docker/deploy.sh
+pipelines:
+  default:
+    - parallel:
+        - step: *unit-test
+        - step: *sonar-cloud
+    - step: *terraform-deploy
+    - step: *build-and-deploy
+  branches:
+    develop:
+      - step: *unit-test
+      - step: *sonar-cloud
+      - step: *terraform-deploy
+      - step: *build-and-deploy
+    main:
+      - step: *unit-test
+      - step: *sonar-cloud
+      - step: *terraform-deploy
+      - step: *build-and-deploy

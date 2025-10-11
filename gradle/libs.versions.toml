@@ -1,0 +1,54 @@
+[versions]
+micronaut = "latest.release"
+logback = "1.4.14"
+junit = "5.11.0"
+foojay = "0.5.0"
+versions = "0.51.0"
+jib = "3.4.1"
+sonarqube = "4.4.1.3373"
+problemVersion = "0.27.1"
+problemJacksonVersion = "0.27.1"
+logbookVersion = "3.10.0"
+springSecurityCryptoVersion = "6.4.2"
+jakartaValidationVersion = "3.1.1"
+jakartaAnnotationVersion = "3.0.0"
+
+
+[libraries]
+jakarta-annotation = { module = "jakarta.annotation:jakarta.annotation-api", version.ref = "jakartaAnnotationVersion" }
+jakarta-validation = { module = "jakarta.validation:jakarta.validation-api", version.ref = "jakartaValidationVersion" }
+apache-commons-codec = { module = "commons-codec:commons-codec", version = "1.15" }
+spring-security-crypto = { module = "org.springframework.security:spring-security-crypto", version.ref = "springSecurityCryptoVersion" }
+
+micronaut-http-validation = { module = "io.micronaut:micronaut-http-validation", version.ref = "micronaut" }
+micronaut-http-client = { module = "io.micronaut:micronaut-http-client", version.ref = "micronaut" }
+micronaut-runtime = { module = "io.micronaut:micronaut-runtime", version.ref = "micronaut" }
+micronaut-management = { module = "io.micronaut:micronaut-management", version.ref = "micronaut" }
+micronaut-validation = { module = "io.micronaut:micronaut-validation", version.ref = "micronaut" }
+micronaut-data-jdbc = { module = "io.micronaut.data:micronaut-data-jdbc", version.ref = "micronaut" }
+micronaut-jdbc-hikari = { module = "io.micronaut.sql:micronaut-jdbc-hikari", version.ref = "micronaut" }
+micronaut-flyway = { module = "io.micronaut.flyway:micronaut-flyway", version.ref = "micronaut" }
+micronaut-cache-redis-lettuce = { module = "io.micronaut.redis:micronaut-redis-lettuce", version.ref = "micronaut" }
+micronaut-cache-core = { module = "io.micronaut.cache:micronaut-cache-core", version.ref = "micronaut" }
+micronaut-http-server = { module = "io.micronaut:micronaut-http-server", version.ref = "micronaut" }
+micronaut-security-jwt = { module = "io.micronaut.security:micronaut-security-jwt", version.ref = "micronaut" }
+
+logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
+junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
+micronaut-test-junit5 = { module = "io.micronaut.test:micronaut-test-junit5", version.ref = "micronaut" }
+zalando-problem = { module = "org.zalando:problem", version.ref = "problemVersion" }
+zalando-problem-jackson = { module = "org.zalando:problem-jackson", version.ref = "problemJacksonVersion" }
+zalando-logbook-core = { module = "org.zalando:logbook-core", version.ref = "logbookVersion" }
+zalando-logbook-filter = { module = "org.zalando:logbook-filter", version.ref = "logbookVersion" }
+zalando-logbook-netty = { module = "org.zalando:logbook-netty", version.ref = "logbookVersion" }
+zalando-logbook-logstash = { module = "org.zalando:logbook-logstash", version.ref = "logbookVersion" }
+zalando-logbook-json = { module = "org.zalando:logbook-json", version.ref = "logbookVersion" }
+
+[plugins]
+micronaut-application = { id = "io.micronaut.application", version.ref = "micronaut" }
+micronaut-library = { id = "io.micronaut.library", version.ref = "micronaut" }
+foojay-resolver = { id = "org.gradle.toolchains.foojay-resolver", version.ref = "foojay" }
+versions-plugin = { id = "com.github.ben-manes.versions", version.ref = "versions" }
+jib-plugin = { id = "com.google.cloud.tools.jib", version.ref = "jib" }
+sonarqube-plugin = { id = "org.sonarqube", version = "sonarqube" }

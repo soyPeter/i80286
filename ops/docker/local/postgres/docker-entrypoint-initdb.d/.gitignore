@@ -1,0 +1,5 @@
+*.sh
+!init_gitlab_db.sh.example
+!init_jupyterhub_db.sh
+!init_sonarqube_db.sh.example
+!init_confluence_db.sh
