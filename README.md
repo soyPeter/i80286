@@ -1,256 +1,250 @@
-# Monorepo Setup for Micronaut Microservices
+# Blueprint 80286 Monorepo
 
-This document outlines the steps and configurations used to set up a monorepo for a Java Micronaut multi-module project, including Gradle configuration, Docker image creation, and other relevant details.
+[![Java](https://img.shields.io/badge/Java-25-007396?logo=java)](https://openjdk.org/projects/jdk/25/)
+[![Gradle](https://img.shields.io/badge/Gradle-9.1.0-02303A?logo=gradle)](https://gradle.org/releases/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4.5-6DB33F?logo=springboot)](https://spring.io/projects/spring-boot)
+[![CI](https://img.shields.io/badge/CI-Bitbucket%20Pipelines-2684FF?logo=bitbucket)](bitbucket-pipelines.yml)
 
-## Project Structure
+Monorepo de microservicios Java con Spring Boot. Incluye configuración moderna de Gradle (Version Catalog), Dockerfiles para containerización, Terraform para IaC en AWS (S3/DynamoDB backend), y pipeline de Bitbucket para CI/CD.
 
-The project has the following directory structure:
+
+## Estructura del proyecto
+
 ```
-monorepo/
-├── gradle/
-│ └── wrapper/
-├── services/
-│ ├── auth/
-│ │   ├── api/
-│ │   └── service/
-│ │       ├── resources/
-│ │       ├── src/
-│ │       │    ├── java/
-│ │       │    └── tests/
-│ │       └── build.gradle.kts
-│ └── users/
-│     ├── api/
-│     └── service/
-│         ├── resources/
-│         ├── src/
-│         │    ├── java/
-│         │    └── tests/
-│         └── build.gradle.kts
-├── ops/
-│   ├── infrastructure/
-│   │ ├── common/
-│   │ ├── modules/
-│   │ └── services/
-│   │     ├── auth/
-│   │     └── users/
-│   ├── scripts/
-│   │   ├── docker/
-│   │   └── ci/  
-│   │       ├── deploy.sh
-│   │       └── terraform-deploy.sh
-│   └── docker/
-│       ├── local/
-│       └── services/
-│           ├── auth/
-│           └── users/
-├── .gitignore
-├── .editorconfig
+.
+├── ARCHITECTURE.md
+├── README.md
+├── bitbucket-pipelines.yml
 ├── build.gradle.kts
-└── README.md
+├── gradle/
+│   ├── libs.versions.toml
+│   └── wrapper/
+├── gradle.properties
+├── settings.gradle.kts
+├── ops/
+│   ├── docker/
+│   │   ├── local/
+│   │   └── services/
+│   │       ├── auth/
+│   │       └── users/
+│   ├── infra/
+│   │   ├── common/
+│   │   │   └── config/
+│   │   │       ├── staging-backend.conf
+│   │   │       └── production-backend.conf
+│   │   ├── modules/
+│   │   │   ├── rds/
+│   │   │   └── security-group/
+│   │   └── services/
+│   │       ├── auth/
+│   │       └── users/
+│   └── scripts/
+│       ├── ci/
+│       │   └── deploy.sh
+│       └── docker/
+├── services/
+│   ├── admin/
+│   ├── api-gateway/
+│   ├── attendance/
+│   ├── customer/
+│   ├── reports/
+│   ├── security/
+│   ├── user/
+│   └── libs/
+│       ├── common-application/
+│       ├── common-contracts/
+│       ├── common-domain/
+│       └── common-infrastructure/
+└── gradlew, gradlew.bat
 ```
 
+Los módulos incluidos en settings.gradle.kts:
+- services: customer, user, admin, attendance, reports, security
+- libs: common-domain, common-application, common-infrastructure, common-contracts
 
-## Prerequisites
+Nombre de raíz: blueprint-80286
 
-Before you begin, make sure you have the following installed:
 
-*   [SDKMAN!](https://sdkman.io/)
-*   Java 21 or higher
-*   Gradle (version 8.11.1 or higher)
-*   Docker
-*   AWS CLI
-*   jq
+## Versiones y dependencias principales
 
-## Step-by-Step Configuration
+- Java: 25 (toolchain Gradle)
+- Gradle Wrapper: 9.1.0 (gradle/wrapper/gradle-wrapper.properties)
+- Spring Boot: 3.4.5 (gradle/libs.versions.toml)
+- Spring Cloud BOM: 2023.0.0
+- Flyway: 9.22.3
+- PostgreSQL Driver: 42.7.2
+- Resilience4j: 2.3.0
+- Micrometer Prometheus: 1.12.4
+- Testcontainers BOM: 1.19.3
+- JUnit: 5.10.2
 
-### 1. Project Setup
+Nota: El pipeline de Bitbucket usa una imagen base Temurin 21; Gradle Toolchains descarga automáticamente JDK 25 para compilar/ejecutar las tareas.
 
-1. Create the base project structure:
-   ```bash
-     mkdir monorepo
-     cd monorepo
-     mkdir -p gradle/wrapper services/auth services/users ops/docker ops/scripts ops/infrastructure ops/infrastructure/common ops/infrastructure/auth ops/infrastructure/users ops/infrastructure/modules
-   ```
-2. Initialize gradle project with basic option
-   ```bash
-   gradle init
-   ```
-   Select type of project to generate: **basic**
-<br><br>
-3. Initialize the Gradle Wrapper:
-     ```bash
-     gradle wrapper
-     ```
-4. Initialize a Git repository:
-    ```bash
-    git init
-    ```
 
-### 2. Gradle Configuration
+## Gradle (configuración moderna)
 
-1. **`settings.gradle.kts` (root):**
-  *   This file defines the root project name and includes subprojects in the build, using a multi-module approach. This configuration applies the foojay-resolver plugin in the plugin management block, to configure the java toolchain.
-     
-  ```kotlin
-        rootProject.name = "i8086-monorepo"
-        include("services:auth")
-        include("services:users")
-        // Include other services as they get created
-        pluginManagement {
-             plugins {
-                 id("org.gradle.toolchains.foojay-resolver") version "0.5.0"
-            }
-        }
-   ```
-2. **`build.gradle.kts` (root):**
-  * This file sets up the build for the root project.
-  * Configures plugins, repositories, and the java version to use for all subprojects.
-    ```kotlin
-        plugins {
-            id("org.gradle.toolchains.foojay-resolver") version "0.5.0"
-        }
+- Version Catalog: gradle/libs.versions.toml
+  - [versions]: springBoot=3.4.5, springCloud=2023.0.0, etc.
+  - [libraries]: alias para starters, PostgreSQL, Flyway, Micrometer, SpringDoc, Testcontainers…
+  - [bundles]: spring-boot, resilience4j, testing
+  - [plugins]: org.springframework.boot, io.spring.dependency-management, org.flywaydb.flyway
+- Toolchain Java 25: configurada en build.gradle.kts (root y servicios)
+- Plugins por módulo: java, spring-boot, dependency-management, flyway
 
-        allprojects {
-            repositories {
-                mavenCentral()
-            }
-        }
+Ejemplo root build.gradle.kts (fragmento):
+```kotlin
+plugins {
+    java
+    alias(libs.plugins.spring.boot)
+    alias(libs.plugins.spring.dependency.management)
+    alias(libs.plugins.flyway)
+}
 
-        subprojects {
-          apply(plugin="java")
-          java {
-            toolchain {
-              languageVersion.set(JavaVersion.VERSION_21)
-            }
-          }
-        }
-    ```
+java {
+    toolchain { languageVersion.set(JavaLanguageVersion.of(25)) }
+}
+```
 
-3. **Version Catalog (`gradle/libs.versions.toml`):**
-  *   A version catalog (`libs.versions.toml`) is used to centralize and manage dependency versions.
-  *   It contains:
-    *   `[versions]`: Defines the versions of dependencies and plugins.
-    *   `[libraries]`: Defines the libraries to be used with the defined versions
-    *   `[plugins]`: Defines the plugins to be used with the defined versions.
-  *   Using a version catalog helps to avoid duplicated configurations, and ensures consistent versions across all modules.
+Ejemplo de dependencias comunes (root y servicios):
+```kotlin
+dependencies {
+    implementation(libs.bundles.spring.boot)
+    implementation(libs.postgresql)
+    implementation(libs.flyway.core)
+    implementation(libs.spring.cloud.starter.config)
+    implementation(libs.bundles.resilience4j)
+    implementation(libs.micrometer.registry.prometheus)
+    implementation(libs.springdoc.openapi.starter.webmvc.ui)
+    testImplementation(libs.bundles.testing)
+    testRuntimeOnly(libs.junit.platform.launcher)
+}
+```
 
-4. **`build.gradle.kts` (in `services/auth` and `services/users`):**
-* These files are responsible for defining the build process for each of the microservices.
-* They define the plugins, dependencies, and specific configuration for each service.
-* They include the configuration for the jib plugin to generate docker images.
+Manejo de BOMs:
+```kotlin
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${libs.versions.springCloud.get()}")
+        mavenBom("org.testcontainers:testcontainers-bom:${libs.versions.testcontainers.get()}")
+    }
+}
+```
 
-5.  **`gradle.properties` (root):**
-  * This file configures the project using properties, like disabling configuration cache to avoid issues with jib.
-    ```properties
-    org.gradle.unsafe.configuration-cache=false
-    org.gradle.configuration-cache.problems=warn
-    ```
-### 3. Docker Configuration
+Propiedades Gradle relevantes (gradle.properties):
+- org.gradle.configuration-cache=false
+- org.gradle.parallel=true
+- org.gradle.caching=false
 
-1.  **`ops/docker/auth/Dockerfile` (and `ops/docker/users/Dockerfile`):**
-  *  These files are used to create the Docker images for each service.
-  *  They define the base image, copy the necessary files, configure the entrypoint, and set up the non root user.
-  *  They do not include environment variables or health check configurations, as those are managed by the orchestration platform.
 
-### 4. Environment Variables
+## Comandos útiles
 
-*   `AWS_ACCOUNT_ID`: Your AWS Account ID.
-*   `AWS_DEFAULT_REGION`: The AWS region where your ECR repository is located.
-*   `BITBUCKET_COMMIT`: The commit id from your bitbucket pipeline. This variable can be set manually for testing purposes.
-*   `AWS_PROFILE` (Optional): Your AWS CLI profile name
-*   `DEPLOY_ENVIRONMENT` (Optional): Set to `prod` for production builds or unset for other environment builds.
-*   `BUILD_TARGET` (Optional): Set to `local` for local builds, or unset for ECR builds.
+- Construir todo: `./gradlew build`
+- Test unitarios: `./gradlew test`
+- Limpiar: `./gradlew clean`
+- Ejecutar un servicio (ej. customer): `./gradlew :services:customer:bootRun`
+- Compilar solo un servicio: `./gradlew :services:customer:build`
 
-### 5. Commands
+En caso de bloqueo del daemon: `./gradlew --stop`
 
-*   **In case of errors:**
-    ```bash
-    ./gradlew --stop
-    ```
-*   **Compile the project:**
-    ```bash
-    ./gradlew :services:auth:build :services:users:build
-    ```    
-*  **Build docker images using jib:**
-      ```bash
-     ./gradlew :services:auth:jibDockerBuild :services:users:jibDockerBuild
-      ```
-   For local images, use the `BUILD_TARGET` variable:
-   ```bash
-   export BUILD_TARGET="local"
-   ./gradlew :services:auth:jibDockerBuild :services:users:jibDockerBuild
-      ```
-*   **Build Docker Images (with Dockerfiles):**
-       ```bash
-       cd monorepo
-       docker build -t auth-dockerfile-image:tests -f ops/docker/services/auth/Dockerfile .
-       docker build -t users-dockerfile-image:tests -f ops/docker/services/users/Dockerfile .
-       ```
 
-*   **Clean Gradle Cache:**
-     ```bash
-    ./gradlew clean --build-cache
-     ```
-### 6. Validating Docker images
+## Docker y containerización
 
-* **Check image size:** Check the image sizes for both types of images, using the command `docker images`
-     ```bash
-     docker images auth-dockerfile-image
-     docker images users-dockerfile-image
-     docker images  ${System.getenv("AWS_ACCOUNT_ID")}.dkr.ecr.${System.getenv("AWS_DEFAULT_REGION")}.amazonaws.com/bitnomio/auth
-     docker images  ${System.getenv("AWS_ACCOUNT_ID")}.dkr.ecr.${System.getenv("AWS_DEFAULT_REGION")}.amazonaws.com/bitnomio/users
-     ```
-*   **Compare Image History:** Compare the history of both images:
-    ```bash
-      docker history auth-dockerfile-image
-      docker history ${System.getenv("AWS_ACCOUNT_ID")}.dkr.ecr.${System.getenv("AWS_DEFAULT_REGION")}.amazonaws.com/bitnomio/auth
-      docker history users-dockerfile-image
-      docker history ${System.getenv("AWS_ACCOUNT_ID")}.dkr.ecr.${System.getenv("AWS_DEFAULT_REGION")}.amazonaws.com/bitnomio/users
-    ```
-*    **Run the Images:** Test that the application runs in the containers, and that they are running correctly using `docker run`. Remember to set the `SERVICE_PORT` environment variable in the docker run command:
-     ```bash
-     docker run -p 8020:8020 -e SERVICE_PORT=8020 auth-dockerfile-image:tests
-     docker run -p 8030:8030 -e SERVICE_PORT=8030 users-dockerfile-image:tests
-     docker run -p 8020:8020 -e SERVICE_PORT=8020  ${System.getenv("AWS_ACCOUNT_ID")}.dkr.ecr.${System.getenv("AWS_DEFAULT_REGION")}.amazonaws.com/bitnomio/auth
-     docker run -p 8030:8030 -e SERVICE_PORT=8030  ${System.getenv("AWS_ACCOUNT_ID")}.dkr.ecr.${System.getenv("AWS_DEFAULT_REGION")}.amazonaws.com/bitnomio/users
-     ```
-### 7. Bitbucket Pipeline
+Actualmente, el repositorio NO tiene configurado el plugin Jib en Gradle. La construcción de imágenes se realiza con Dockerfiles ubicados en ops/docker/services/<servicio>.
 
-### 8. Terraform Configuration
+- Dockerfiles por servicio:
+  - ops/docker/services/auth/Dockerfile
+  - ops/docker/services/users/Dockerfile
+- Servicios de infraestructura local (Elasticsearch, Postgres, Redis, RabbitMQ, etc.) disponen de Dockerfiles bajo ops/docker/local/* para desarrollo local.
 
-Remote Backend:
+Ejemplos de build y run:
+```bash
+# Desde la raíz del repo
+# Construir imágenes
+docker build -t auth:local -f ops/docker/services/auth/Dockerfile .
+docker build -t users:local -f ops/docker/services/users/Dockerfile .
 
-As [this article explains](https://medium.com/@aaloktrivedi/configuring-a-terraform-remote-backend-with-s3-and-dynamodb-ebcefa8432ea), using a remote backend is crucial for collaborative Terraform projects. It addresses the limitations of storing state files locally, such as potential conflicts and lack of versioning.
-Implementation: We're using the S3 backend, as specified in your staging-backend.conf (or a similar file). This tells Terraform to store its state file in an S3 bucket, making it more reliable and accessible from different environments.
+# Ejecutar exponiendo puertos ejemplo
+docker run --rm -p 8020:8020 -e SERVICE_PORT=8020 auth:local
+docker run --rm -p 8030:8030 -e SERVICE_PORT=8030 users:local
+```
 
-#### S3 Bucket:
+Publicación en AWS ECR (CI): el script ops/scripts/ci/deploy.sh inicia sesión en ECR, construye imágenes y actualiza servicios ECS. Asegúrate de tener exportadas estas variables en CI:
+- AWS_ACCOUNT_ID
+- AWS_KEY, AWS_SECRET
+- AWS_DEFAULT_REGION (eu-west-1 por defecto en scripts)
 
-The S3 bucket (tf-remote-bitnomio in your setup) acts as the storage location for the Terraform state file (remote.tfstate in our case, with a prefix for each environment) .
-Creation: You manually created the S3 bucket, as recommended by the article, and we are not managing the S3 bucket using terraform.
-Permissions: We have discussed the IAM permissions necessary to access the S3 bucket, and we have confirmed that the peter profile that you are using, has the correct permissions.
+Nota sobre Jib: el pipeline invoca tareas jibDockerBuild, pero no existe configuración Jib en los build.gradle.kts. Si se decide usar Jib en el futuro, agrega el plugin com.google.cloud.tools.jib y actualiza este README y los scripts.
 
-#### DynamoDB Table:
 
-As described in the article, a DynamoDB table is used for state locking, which ensures that only one Terraform operation can modify the state at a time.
-Creation: You manually created a DynamoDB table ( tf-infra-state-lock) with the required partition key (LockID, String), which is also described in the article.
-Permissions: The IAM user associated with the profile that you are using to initialize terraform should have the necessary permissions to perform operations in this table (read, write, delete)
+## Terraform (IaC en AWS)
 
-#### Terraform Backend Configuration:
-
-backend-config parameter: We are using the terraform init command with the -backend-config option to specify the backend configuration file that we created earlier.
-backend block: We are using an S3 backend, specifying the bucket name, key, region, and the DynamoDB table name in our backend configuration file.
-
-```properties
-bucket  = "tf-remote-bitnomio"
+Backend remoto (S3/DynamoDB):
+- Archivo de backend (staging): ops/infra/common/config/staging-backend.conf
+- Contenido real:
+```hcl
+bucket  = "tf-remote-state-bitnomio"
 key     = "staging/i8086/remote.tfstate"
 encrypt = true
 region  = "eu-west-1"
-dynamodb_table = "tf-infra-state-lock"
+dynamodb_table = "tf-infra-bitnomio-locking"
 ```
-#### Credentials and Profiles
+- Existe también production-backend.conf con la configuración equivalente para producción.
 
-Using the --profile parameter, with the environment variable AWS_PROFILE in our terraform init commands, to indicate which credentials should be used to access both the S3 bucket and the dynamoDB table.
-We have also set the profile attribute in the provider block, using the aws_profile variable, to specify the credentials that should be used when performing operations with terraform resources.
-Key points
+Inicialización por servicio (ej. auth):
+```bash
+# Posicionarse en la carpeta del servicio de infraestructura
+cd ops/infra/services/auth
 
-Manual Creation: Both the S3 bucket and the DynamoDB table were created manually in the AWS Console. Terraform is not managing this resources, since they are a pre-requisite for managing other resources.
+# Inicializar con backend remoto para staging
+terraform init -backend-config=../../common/config/staging-backend.conf -reconfigure
+
+# Ver versión
+terraform --version
+
+# Plan y apply (ejemplo; define tus variables/secretos vía TF_VAR_*)
+terraform plan
+terraform apply
+```
+
+Perfiles y credenciales AWS:
+- Usa AWS_PROFILE en tu entorno si manejas múltiples perfiles.
+- Permisos necesarios para: S3 (lectura/escritura del state) y DynamoDB (lock/unlock).
+
+Recursos representativos en Terraform:
+- Módulo RDS para Postgres (ops/infra/modules/rds)
+- Security Groups (ops/infra/modules/security-group)
+- Redis/ElastiCache y SG específicos por servicio (ejemplo en ops/infra/services/auth/main.tf)
+
+
+## CI/CD con Bitbucket Pipelines
+
+Archivo: bitbucket-pipelines.yml
+- Imagen base: eclipse-temurin:21-jdk-jammy
+- Caches: Gradle, Docker, Terraform
+- Variables: AWS_DEFAULT_REGION, AWS_ACCOUNT_ID
+- Pasos:
+  - Unit Tests: `./gradlew test`
+  - SonarCloud: `./gradlew sonarqube` (requiere SONAR_TOKEN)
+  - Terraform Deploy: instala Terraform 1.10.1 y ejecuta ops/ci/terraform-deploy.sh
+  - Build and Deploy Services: ejecuta ops/scripts/docker/deploy.sh (login ECR, build, actualización ECS)
+
+Ramas: default, develop, main con pipeline similar.
+
+
+## Troubleshooting
+
+- Toolchains y JDK 25 en CI:
+  - Si ves errores de versión de Java, verifica que Gradle descargó la toolchain 25. Agrega `org.gradle.java.installations.auto-download=true` si fuera necesario (Gradle lo hace por defecto).
+- Configuration cache desactivada:
+  - Está desactivada en gradle.properties para evitar problemas con algunos plugins/tareas.
+- Login en ECR falla:
+  - Verifica AWS_ACCOUNT_ID, AWS_KEY, AWS_SECRET y región. Asegúrate de que la política del usuario permite ecr:GetAuthorizationToken.
+- Terraform backend y permisos:
+  - 403/AccessDenied al hacer init suele indicar permisos insuficientes sobre el bucket S3 o la tabla DynamoDB.
+- Puertos ocupados al ejecutar contenedores locales:
+  - Cambia los mapeos -p 80xx:80xx o detén procesos que usen esos puertos.
+
+
+## Estándares de arquitectura
+
+Consulta ARCHITECTURE.md para guías de Arquitectura Hexagonal, DDD, y prácticas de testing y despliegue que rigen este monorepo.
