@@ -1,4 +1,4 @@
-package io.bitnomio.customer.infrastructure.adapter.io.http.res;
+package es.myinvestor.common.infrastructure.web.res;
 
 import java.time.Instant;
 import java.util.List;

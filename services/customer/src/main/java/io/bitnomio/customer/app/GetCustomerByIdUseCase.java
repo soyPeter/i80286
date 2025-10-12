@@ -1,4 +1,4 @@
-package io.bitnomio.customer.application.usecase.query;
+package io.bitnomio.customer.app;
 
 import io.bitnomio.customer.domain.repository.CustomerQueryRepository;
 import io.bitnomio.customer.infrastructure.adapter.data.persistence.entities.Customer;

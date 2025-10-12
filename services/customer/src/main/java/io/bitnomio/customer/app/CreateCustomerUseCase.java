@@ -1,4 +1,4 @@
-package io.bitnomio.customer.application.usecase.command;
+package io.bitnomio.customer.app;
 
 import com.company.common.domain.model.vo.Address;
 import com.company.common.domain.model.vo.Email;

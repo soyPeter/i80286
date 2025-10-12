@@ -1,4 +1,4 @@
-package io.bitnomio.customer.domain.event;
+package es.myinvestor.common.infrastructure.messaging.event;
 
 import java.time.Instant;
 import java.util.UUID;

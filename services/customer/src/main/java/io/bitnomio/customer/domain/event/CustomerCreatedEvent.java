@@ -1,5 +1,6 @@
 package io.bitnomio.customer.domain.event;
 
+import es.myinvestor.common.infrastructure.messaging.event.DomainEvent;
 import io.bitnomio.customer.infrastructure.adapter.data.persistence.entities.Customer;
 
 /**

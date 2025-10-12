@@ -1,9 +1,97 @@
+
+
+[libraries]
+# Spring Boot
+spring-boot-starter-webflux = { module = "org.springframework.boot:spring-boot-starter-webflux", version.ref = "springBoot" }
+spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "springBoot" }
+spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "springBoot" }
+spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation", version.ref = "springBoot" }
+spring-boot-starter-amqp = { module = "org.springframework.boot:spring-boot-starter-amqp", version.ref = "springBoot" }
+spring-boot-starter-jdbc = { module = "org.springframework.boot:spring-boot-starter-jdbc", version.ref = "springBoot" } # Brings HikariCP
+spring-boot-starter-aop = { module = "org.springframework.boot:spring-boot-starter-aop", version.ref = "springBoot" } # For Resilience4j annotations
+reactor-core = { module = "io.projectreactor:reactor-core", version.ref = "reactor" }
+
+
+
+
+# Spring Cloud
+spring-cloud-config-client = { module = "org.springframework.cloud:spring-cloud-starter-config", version.ref = "springCloudConfig" }
+
+# Observability
+micrometer-core = { module = "io.micrometer:micrometer-core", version.ref = "micrometer" }
+micrometer-registry-prometheus = { module = "io.micrometer:micrometer-registry-prometheus", version.ref = "micrometer" }
+opentelemetry-sdk = { module = "io.opentelemetry:opentelemetry-sdk", version.ref = "opentelemetry" }
+opentelemetry-exporter-otlp = { module = "io.opentelemetry:opentelemetry-exporter-otlp", version.ref = "opentelemetry" } # For sending traces to collector
+opentelemetry-instrumentation-spring-web = { module = "io.opentelemetry.instrumentation:opentelemetry-instrumentation-spring-webmvc", version.ref = "opentelemetry" }
+opentelemetry-instrumentation-spring-data-jdbc = { module = "io.opentelemetry.instrumentation:opentelemetry-instrumentation-spring-data-jdbc", version.ref = "opentelemetry" } # Might work with JDBI via JDBC driver
+opentelemetry-instrumentation-jdbc = { module = "io.opentelemetry.instrumentation:opentelemetry-instrumentation-jdbc", version.ref = "opentelemetry" } # Direct JDBC instrumentation
+
+# Logging
+logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+logback-json-encoder = { module = "net.logstash.logback:logstash-logback-encoder", version = "7.4" } # For structured JSON logging
+
+# Testing
+# junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
+# junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
+assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
+mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito" }
+testcontainers-junit-jupiter = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainers" }
+testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainers" }
+testcontainers-rabbitmq = { module = "org.testcontainers:rabbitmq", version.ref = "testcontainers" }
+
+# Utilities
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
+jackson-annotations = { module = "com.fasterxml.jackson.core:jackson-annotations", version.ref = "jackson" }
+jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jackson" } # For Java 8 Date/Time
+jakarta-validation-api = { module = "jakarta.validation:jakarta.validation-api", version.ref = "jakarta-validation" }
+
+# OpenAPI Documentation
+springdoc-openapi-starter-webmvc-ui = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "openapi" }
+
+
+
 [versions]
+java = "25"
+
 # Spring
 springBoot = "3.4.5"
 springDependencyManagement = "1.1.7"
 springCloud = "2023.0.0"
 fooJayResolver = "0.5.0"
+kotlin = "1.9.20"
+
+# Ids
+tsid = "2.1.4"
+
+# Database & Persistence
+jdbi = "3.49.5" # Latest JDBI 3.x
+hikari = "5.1.0" # Latest HikariCP
+postgresql = "42.7.3" # Latest PostgreSQL JDBC driver
+flyway = "11.10.4" # Latest Flyway
+
+# Messaging
+rabbitmq = "3.23.0" # Latest RabbitMQ client
+
+# Resilience & Cloud
+resilience4j = "2.2.0" # Latest Resilience4j
+springCloudConfig = "4.1.2" # Compatible with Spring Boot 3.3.x
+
+# Testing
+junit = "5.10.2"
+assertj = "3.26.0"
+mockito = "5.12.0"
+testcontainers = "1.19.7"
+
+# Observability
+micrometer = "1.14.0"
+opentelemetry = "1.39.0"
+logback = "1.5.7" # Logback compatible with Spring Boot 3
+jackson = "2.17.2" # Jackson compatible with Spring Boot 3
+openapi = "2.6.0" # Springdoc OpenAPI
+jakarta-validation = "3.1.1"
+reactor = "3.6.13"
+
 
 # Database
 postgresql = "42.7.2"
@@ -39,6 +127,20 @@ spring-boot-starter-amqp = { module = "org.springframework.boot:spring-boot-star
 # Spring Cloud
 spring-cloud-starter-config = { module = "org.springframework.cloud:spring-cloud-starter-config" }
 spring-cloud-starter-circuitbreaker-resilience4j = { module = "org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j" }
+
+# TSID
+tsid = { module = "io.hypersistence:hypersistence-tsid", version.ref = "tsid"}
+
+# JDBI
+jdbi-core = { module = "org.jdbi:jdbi3-core", version.ref = "jdbi" }
+jdbi-objects = { module = "org.jdbi:jdbi3-sqlobject", version.ref = "jdbi" }
+jdbi-postgres = { module = "org.jdbi:jdbi3-postgres", version.ref = "jdbi" }
+jdbi-jackson2 = { module = "org.jdbi:jdbi3-jackson2", version.ref = "jdbi" }
+jdbi-spring = { module = "org.jdbi:jdbi3-spring5", version.ref = "jdbi" } # Note: jdbi3-spring4 supports Spring Framework 5+ and Spring Boot 2+/3+
+jdbi-caffeine-cache = { module = "org.jdbi:jdbi3-caffeine-cache", version.ref = "jdbi" }
+jdbi-opentelemetry = { module = "org.jdbi:jdbi3-opentelemetry", version.ref = "jdbi" }
+jdbi-commons-text = { module = "org.jdbi:jdbi3-commons-text", version.ref = "jdbi" }
+jdbi-stringtemplate = { module = "org.jdbi:jdbi3-stringtemplate4", version.ref = "jdbi" }
 
 # Database
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
@@ -93,3 +195,5 @@ spring-boot = { id = "org.springframework.boot", version.ref = "springBoot" }
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "springDependencyManagement" }
 flyway = { id = "org.flywaydb.flyway", version.ref = "flyway" }
 foojay-resolver = { id = "org.gradle.toolchains.foojay-resolver", version.ref = "fooJayResolver" }
+jvm-toolchains = { id = "org.jetbrains.kotlin.jvm.toolchains", version.ref = "kotlin" } # Not really a plugin, but used to set JVM toolchains
+

@@ -1,4 +1,4 @@
-package io.bitnomio.customer.application.usecase.command;
+package io.bitnomio.customer.app;
 
 import io.bitnomio.customer.domain.repository.CustomerCommandRepository;
 import io.bitnomio.customer.infrastructure.adapter.data.persistence.entities.Customer;

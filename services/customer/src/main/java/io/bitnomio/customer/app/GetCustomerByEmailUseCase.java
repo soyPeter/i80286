@@ -1,4 +1,4 @@
-package io.bitnomio.customer.application.usecase.query;
+package io.bitnomio.customer.app;
 
 import com.company.common.domain.model.vo.Email;
 import io.bitnomio.customer.domain.repository.CustomerQueryRepository;
