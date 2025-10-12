@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <!-- Exclude issues from generated code (e.g., Spring proxies, JDBI generated classes) -->
+    <!-- <Match>
+        <Bug pattern="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR"/>
+        <Class name="~.*\$MockitoMock\$[0-9]+"/>
+    </Match> -->
+    <!-- Add specific exclusions as they arise during development/analysis -->
+</FindBugsFilter>

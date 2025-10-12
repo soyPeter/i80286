@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<ruleset name="Custom PMD Rules"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+        Custom PMD ruleset for Fraud Detection Engine project.
+    </description>
+
+    <!-- Recommended PMD rulesets -->
+    <rule ref="category/java/errorprone.xml"/>
+    <rule ref="category/java/bestpractices.xml"/>
+    <rule ref="category/java/design.xml"/>
+    <rule ref="category/java/codestyle.xml"/>
+    <rule ref="category/java/performance.xml"/>
+    <rule ref="category/java/multithreading.xml"/>
+
+    <!-- Exclude specific rules if they don't fit your project's style or context -->
+    <!-- Example: If you use System.out for quick debugging during development -->
+    <!-- <rule ref="category/java/errorprone.xml/SystemPrintln" /> -->
+
+    <!-- Custom rules based on project guidelines -->
+    <!-- Example: No Lombok (PMD can sometimes detect Lombok generated methods) -->
+    <!-- You'd need a custom PMD rule for this, not directly covered by stock rules -->
+
+    <!-- Ensure constructor injection is used (can be tricky for static analysis) -->
+    <!-- This is usually enforced via code review and architectural tests -->
+
+</ruleset>

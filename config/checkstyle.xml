@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+        "-//Checkstyle//DTD Checkstyle Configuration 10.16//EN"
+        "https://checkstyle.org/dtds/configuration_10_16.dtd">
+
+<module name="Checker">
+    <property name="charset" value="UTF-8"/>
+    <property name="severity" value="error"/>
+    <property name="fileExtensions" value="java, xml"/>
+
+    <!-- Disallow wildcard imports -->
+    <module name="AvoidStarImport"/>
+
+    <!-- Naming conventions -->
+    <module name="TypeNameCheck"/>
+    <module name="MemberNameCheck"/>
+    <module name="MethodNameCheck"/>
+    <module name="ConstantNameCheck"/>
+    <module name="LocalVariableNameCheck"/>
+    <module name="ParameterNameCheck"/>
+
+    <!-- Code layout -->
+    <module name="EmptyBlock"/>
+    <module name="LeftCurly"/>
+    <module name="RightCurly"/>
+    <module name="WhitespaceAfter"/>
+    <module name="WhitespaceAround"/>
+    <module name="NoLineWrap"/>
+    <module name="EmptyForInitializerPad"/>
+    <module name="EmptyForIteratorPad"/>
+    <module name="ParenPad"/>
+    <module name="MethodParamPad"/>
+    <module name="OperatorPad"/>
+    <module name="TypecastParenPad"/>
+    <module name="ArrayTypeStyle"/>
+    <module name="MissingSwitchDefault"/>
+    <module name="DefaultComesLast"/>
+    <module name="FallThrough"/>
+    <module name="MultipleStringLiterals"/>
+    <module name="MultipleVariableDeclarations"/>
+    <module name="NoWhitespaceBefore"/>
+    <module name="NoWhitespaceBeforeCaseDefaultColon"/>
+    <module name="SimplifyBooleanExpression"/>
+    <module name="SimplifyBooleanReturn"/>
+
+    <!-- Imports -->
+    <module name="RedundantImport"/>
+    <module name="UnusedImports"/>
+    <module name="CustomImportOrder">
+        <property name="customImportOrderRules" value="STATIC###THIRD_PARTY_PACKAGE###com.example.fraud###STANDARD_JAVA_PACKAGE"/>
+        <property name="standardPackageRegExp" value="^(java|javax)\\."/>
+        <property name="separateLine" value="true"/>
+        <property name="sortModulesInGroupOnly" value="true"/>
+        <property name="grouped" value="false"/>
+    </module>
+
+    <!-- Coding practices -->
+    <module name="EqualsHashCode"/>
+    <module name="HiddenField"/>
+    <module name="ModifiedControlVariable"/>
+    <module name="MagicNumber"/>
+    <module name="MissingOverride"/>
+    <module name="NestedForDepth">
+        <property name="max" value="2"/>
+    </module>
+    <module name="NestedIfDepth">
+        <property name="max" value="2"/>
+    </module>
+    <module name="ReturnCount">
+        <property name="max" value="2"/>
+    </module>
+    <module name="StringLiteralEquality"/>
+    <module name="SuperFinalize"/>
+    <module name="SuperClone"/>
+    <module name="ExplicitInitialization"/>
+    <module name="DefaultComesLast"/>
+    <module name="CovariantEquals"/>
+
+    <!-- Javadoc / Comments -->
+    <module name="MissingJavadocType"/>
+    <module name="MissingJavadocMethod"/>
+    <module name="CommentsIndentation"/>
+
+    <!-- Cyclomatic Complexity -->
+    <module name="CyclomaticComplexity">
+        <property name="max" value="10"/>
+    </module>
+
+    <!-- Line Length -->
+    <module name="LineLength">
+        <property name="max" value="120"/>
+        <property name="ignorePattern" value="^import|^package.*"/>
+    </module>
+
+    <!-- Others -->
+    <module name="TrailingComma"/>
+    <module name="EmptyStatement"/>
+    <module name="FinalClass"/>
+    <module name="Indentation"/>
+    <module name="InnerTypeLast"/>
+    <module name="JavaNCSS">
+        <property name="methodMaximum" value="50"/>
+    </module>
+    <module name="NeedBraces"/>
+    <module name="MultipleVariableDeclarations"/>
+    <module name="OverloadMethodsDeclarationOrder"/>
+    <module name="ParameterNumber"/>
+    <module name="VisibilityModifier"/>
+    <module name="ArrayTrailingComma"/>
+</module>
