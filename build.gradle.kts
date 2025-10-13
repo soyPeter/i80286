@@ -68,7 +68,7 @@ dependencies {
   implementation(libs.flyway.core)
 
   // Spring Cloud Config
-  implementation(libs.spring.cloud.starter.config)
+  implementation(libs.spring.cloud.config.client)
 
   // Resilience4j
   implementation(libs.bundles.resilience4j)
