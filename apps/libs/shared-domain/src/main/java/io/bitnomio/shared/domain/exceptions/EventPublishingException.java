@@ -1,8 +1,8 @@
 /*
  * COPYRIGHT 2020 -2025 original authors
- * mailto:myinvestor-backend@MyInvestor.es
+ * mailto:bitnomio-backend@bitnomio.io
  *
- * shared-domain - Created by pedro.almendro@MyInvestor
+ * shared-domain - Created by pedro.almendro@bitnomio
  * Date: 9/8/25 Time: 20:00
  *
  */
@@ -13,7 +13,7 @@ package io.bitnomio.shared.domain.exceptions;
  * This is a domain exception that encapsulates event publishing failures.
  */
 public class EventPublishingException extends RuntimeException {
-    
+
     private final String eventType;
     private final Object event;
 

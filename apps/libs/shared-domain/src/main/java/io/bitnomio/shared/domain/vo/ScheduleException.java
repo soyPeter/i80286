@@ -1,4 +1,4 @@
-package com.company.common.domain.model.vo;
+package io.bitnomio.shared.domain.vo;
 
 import java.time.LocalDate;
 import java.util.Objects;

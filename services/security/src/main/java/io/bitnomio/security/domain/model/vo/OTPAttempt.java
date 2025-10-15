@@ -1,8 +1,8 @@
 /*
  * COPYRIGHT 2020 -2025 original authors
- * mailto:myinvestor-backend@MyInvestor.es
+ * mailto:bitnomio-backend@bitnomio.io
  *
- * blueprint-80286 - Created by pedro.almendro@MyInvestor
+ * blueprint-80286 - Created by pedro.almendro@bitnomio
  * Date: 11/10/25 Time: 19:36
  *
  * PLEASE ADD HERE A BRIEF DESCRIPTION!!! :D

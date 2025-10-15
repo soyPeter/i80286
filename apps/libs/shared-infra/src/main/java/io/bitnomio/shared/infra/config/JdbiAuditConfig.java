@@ -1,8 +1,8 @@
 /*
  * COPYRIGHT 2020 -2025 original authors
- * mailto:myinvestor-backend@bnext.es
+ * mailto:bitnomio-backend@bnext.es
  *
- * fraud-detection-engine - Created by pedro.almendro@MyInvestor
+ * fraud-detection-engine - Created by pedro.almendro@bitnomio
  * Date: 4/8/25 Time: 18:41
  *
  */

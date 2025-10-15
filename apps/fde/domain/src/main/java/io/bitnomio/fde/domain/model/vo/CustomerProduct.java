@@ -1,8 +1,8 @@
 /*
  * COPYRIGHT 2020 -2025 original authors
- * mailto:myinvestor-backend@MyInvestor.es
+ * mailto:bitnomio-backend@bitnomio.io
  *
- * fraud-detection-engine - Created by pedro.almendro@MyInvestor
+ * fraud-detection-engine - Created by pedro.almendro@bitnomio
  * Date: 12/8/25 Time: 22:55
  *
  */
@@ -33,11 +33,11 @@ public record CustomerProduct(
         Objects.requireNonNull(acquisitionDate, "Acquisition date cannot be null");
         Objects.requireNonNull(status, "Status cannot be null");
     }
-    
+
     /**
      * Factory method to create an empty product with default values.
      * Useful for testing or when product details are not available.
-     * 
+     *
      * @param productId The ID of the product
      * @return A new CustomerProduct with default values
      */
@@ -50,28 +50,28 @@ public record CustomerProduct(
             "ACTIVE"
         );
     }
-    
+
     /**
      * Checks if this product is a cash account.
-     * 
+     *
      * @return true if this product is a cash account, false otherwise
      */
     public boolean isCashAccount() {
         return "CASH_ACCOUNT".equals(productType);
     }
-    
+
     /**
      * Checks if this product is active.
-     * 
+     *
      * @return true if this product is active, false otherwise
      */
     public boolean isActive() {
         return "ACTIVE".equals(status);
     }
-    
+
     /**
      * Checks if this product was acquired within the specified number of days.
-     * 
+     *
      * @param days The number of days to check
      * @return true if this product was acquired within the specified number of days, false otherwise
      */

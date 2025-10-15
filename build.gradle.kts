@@ -11,14 +11,14 @@ plugins {
 allprojects {
   group = "io.bitnomio"
   version = "0.0.1-SNAPSHOT"
-
-  repositories {
-    mavenCentral()
-  }
 }
 
 subprojects {
   apply(plugin = "java")
+
+  repositories {
+    mavenCentral()
+  }
 
   configure<JavaPluginExtension> {
     toolchain {
@@ -52,7 +52,7 @@ subprojects {
       }
     }
 
-    project.path.startsWith(":libs:") -> {
+    project.path.startsWith(":apps:libs:") -> {
       configureLibraryModule()
     }
   }

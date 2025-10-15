@@ -1,4 +1,4 @@
-package com.company.common.domain.model.vo;
+package io.bitnomio.shared.domain.vo;
 
 /**
  * Value Object representing a physical address.

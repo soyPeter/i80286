@@ -1,6 +1,5 @@
 rootProject.name = "blueprint-80286"
 
-
 pluginManagement {
   repositories {
     gradlePluginPortal()
@@ -22,21 +21,21 @@ dependencyResolutionManagement {
 }
 
 // Librerías compartidas entre TODOS los bounded contexts
+include("apps:libs:shared-api")        // DTOs comunes, validaciones cross-domain
 include("apps:libs:shared-domain")     // Value Objects, interfaces y conceptos comunes
 include("apps:libs:shared-infra")      // Configuraciones, adaptadores base, utils
-include("apps:libs:shared-api")        // DTOs comunes, validaciones cross-domain
 
 // Bounded Context: FDE (ACTUAL - migración completa)
-include("apps:admin")
-include("apps:admin:domain")
-include("apps:admin:app")
-include("apps:admin:infra")
-
-//// Bounded Context: AML (FUTURO - placeholder para preparar)
-include("apps:aml")
-include("apps:aml:app")
-include("apps:aml:domain")
-include("apps:aml:infra")
+//include("apps:admin")
+//include("apps:admin:domain")
+//include("apps:admin:app")
+//include("apps:admin:infra")
+//
+////// Bounded Context: AML (FUTURO - placeholder para preparar)
+//include("apps:aml")
+//include("apps:aml:app")
+//include("apps:aml:domain")
+//include("apps:aml:infra")
 //
 //// Bounded Context: PBC (FUTURO - placeholder)
 //include("apps:pbc")

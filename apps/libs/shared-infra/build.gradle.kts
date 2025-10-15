@@ -4,8 +4,8 @@ plugins {
 
 dependencies {
     implementation(libs.bundles.spring.boot)
-    implementation(libs.bundles.postgres.flyway.jdbi)
-    implementation(libs.tsid)
+//    implementation(libs.bundles.postgres.flyway.jdbi)
+//    implementation(libs.tsid)
 
 
 //    testImplementation(libs.junit.jupiter.api)
