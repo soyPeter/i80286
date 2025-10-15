@@ -14,7 +14,7 @@ import java.security.Principal;
  * A reactive WebFilter that extracts the current authenticated user's name
  * from the ServerWebExchange and adds it to the Reactor Context and MDC for logging.
  */
-import es.myinvestor.shared.infra.utils.MdcUtils;
+import io.bitnomio.shared.infra.utils.MdcUtils;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;

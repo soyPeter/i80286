@@ -1,6 +1,6 @@
 package io.bitnomio.shared.infra.io.filters;
 
-import es.myinvestor.shared.infra.data.dto.StandardResponse;
+import io.bitnomio.shared.infra.data.dto.StandardResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;

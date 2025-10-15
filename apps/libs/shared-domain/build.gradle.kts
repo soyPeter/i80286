@@ -3,8 +3,10 @@ plugins {
 }
 
 dependencies {
-    implementation(libs.jakarta.validation.api)
-    
+//  implementation(libs.bundles.spring.boot)
+
+  implementation(libs.jakarta.validation.api)
+
 //    testImplementation(libs.junit.jupiter.api)
     testImplementation(libs.assertj.core)
 //    testRuntimeOnly(libs.junit.jupiter.engine)

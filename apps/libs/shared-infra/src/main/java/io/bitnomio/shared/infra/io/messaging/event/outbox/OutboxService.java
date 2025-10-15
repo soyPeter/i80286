@@ -1,8 +1,8 @@
 package io.bitnomio.shared.infra.io.messaging.event.outbox;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import es.myinvestor.shared.domain.event.DomainEvent;
-import es.myinvestor.shared.infra.events.EventPublishingException;
+import io.bitnomio.shared.infra.io.messaging.event.DomainEvent;
+import io.bitnomio.shared.infra.io.messaging.event.EventPublishingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;

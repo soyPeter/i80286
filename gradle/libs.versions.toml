@@ -2,7 +2,7 @@
 java = "25"
 
 # Spring
-springBoot = "3.5.6"
+springBoot = "4.0.0-M3"
 springDependencyManagement = "1.1.7"
 springCloud = "2023.0.0"
 springCloudConfig = "4.1.2"
@@ -47,14 +47,16 @@ testcontainers = "1.19.7"
 # Spring Boot
 spring-boot-starter = { module = "org.springframework.boot:spring-boot-starter" }
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
+spring-boot-starter-webmvc = { module = "org.springframework.boot:spring-boot-starter-webmvc" }
+spring-boot-http-web = { module = "org.springframework.boot:spring-boot-starter-restclient" }
 spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
 spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator" }
-spring-boot-starter-amqp = { module = "org.springframework.boot:spring-boot-starter-amqp" }
-spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "springBoot" }
-spring-boot-starter-jdbc = { module = "org.springframework.boot:spring-boot-starter-jdbc", version.ref = "springBoot" } # Brings HikariCP
 spring-boot-starter-aop = { module = "org.springframework.boot:spring-boot-starter-aop", version.ref = "springBoot" } # For Resilience4j annotations
+spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "springBoot" }
+spring-boot-starter-data = { module = "org.springframework.boot:spring-boot-starter-data-jpa", version.ref = "springBoot" } # Brings HikariCP
+spring-boot-starter-amqp = { module = "org.springframework.boot:spring-boot-starter-amqp" }
 
-spring-boot-devtools = {module ="org.springframework.boot:spring-boot-devtools"}
+spring-boot-devtools = { module = "org.springframework.boot:spring-boot-devtools" }
 
 reactor-core = { module = "io.projectreactor:reactor-core", version.ref = "reactor" }
 
@@ -64,7 +66,7 @@ spring-cloud-starter-circuitbreaker-resilience4j = { module = "org.springframewo
 spring-cloud-config-client = { module = "org.springframework.cloud:spring-cloud-starter-config", version.ref = "springCloudConfig" }
 
 # TSID
-tsid = { module = "io.hypersistence:hypersistence-tsid", version.ref = "tsid"}
+tsid = { module = "io.hypersistence:hypersistence-tsid", version.ref = "tsid" }
 
 # JDBI
 jdbi-core = { module = "org.jdbi:jdbi3-core", version.ref = "jdbi" }
@@ -123,13 +125,16 @@ testcontainers-rabbitmq = { module = "org.testcontainers:rabbitmq", version.ref 
 
 [bundles]
 spring-boot = [
-    "spring-boot-starter",
-    "spring-boot-starter-web",
-    "spring-boot-starter-validation",
-    "spring-boot-starter-actuator",
+  "spring-boot-starter-web",
+  "spring-boot-starter-webmvc",
+#  "spring-boot-http-web",
+#  "spring-boot-starter-validation",
+#  "spring-boot-starter-actuator",
+#  "spring-boot-starter-aop"
 ]
 
 postgres-flyway-jdbi = [
+  "spring-boot-starter-data",
   "postgresql",
   "flyway-core",
   "flyway-postgresql",
@@ -145,18 +150,18 @@ postgres-flyway-jdbi = [
 ]
 
 resilience4j = [
-    "spring-cloud-starter-circuitbreaker-resilience4j",
-    "resilience4j-spring-boot3",
-    "resilience4j-bulkhead",
-    "resilience4j-ratelimiter",
-    "resilience4j-retry"
+  "spring-cloud-starter-circuitbreaker-resilience4j",
+  "resilience4j-spring-boot3",
+  "resilience4j-bulkhead",
+  "resilience4j-ratelimiter",
+  "resilience4j-retry"
 ]
 testing = [
-    "spring-boot-starter-test",
-#    "spring-rabbit-test",
-    "testcontainers-junit-jupiter",
-    "testcontainers-postgresql",
-    "testcontainers-rabbitmq"
+  "spring-boot-starter-test",
+  #    "spring-rabbit-test",
+  "testcontainers-junit-jupiter",
+  "testcontainers-postgresql",
+  "testcontainers-rabbitmq"
 ]
 
 [plugins]

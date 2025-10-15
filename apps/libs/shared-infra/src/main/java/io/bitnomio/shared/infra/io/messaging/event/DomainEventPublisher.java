@@ -1,6 +1,5 @@
 package io.bitnomio.shared.infra.io.messaging.event;
 
-import es.myinvestor.shared.domain.event.DomainEvent;
 
 /**
  * Interface for publishing domain events.

@@ -1,6 +1,6 @@
 package io.bitnomio.shared.infra.io.filters;
 
-import es.myinvestor.shared.infra.utils.RequestIdExtractor;
+import io.bitnomio.shared.infra.utils.RequestIdExtractor;
 import io.hypersistence.tsid.TSID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

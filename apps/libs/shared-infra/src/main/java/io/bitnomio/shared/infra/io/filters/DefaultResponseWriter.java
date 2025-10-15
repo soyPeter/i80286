@@ -1,8 +1,8 @@
 package io.bitnomio.shared.infra.io.filters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import es.myinvestor.shared.infra.data.dto.StandardResponse;
-import es.myinvestor.shared.infra.utils.ErrorResponseBuilder;
+import io.bitnomio.shared.infra.data.dto.StandardResponse;
+import io.bitnomio.shared.infra.utils.ErrorResponseBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.buffer.DataBuffer;

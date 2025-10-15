@@ -1,8 +1,8 @@
-package io.bitnomio.shared.infra.data.events.rabbit;
+package io.bitnomio.shared.infra.io.messaging.event.rabbit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.bitnomio.shared.infra.data.events.DomainEvent;
-import io.bitnomio.shared.infra.data.events.DomainEventListener;
+import io.bitnomio.shared.infra.io.messaging.event.DomainEvent;
+import io.bitnomio.shared.infra.io.messaging.event.DomainEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Binding;
@@ -25,11 +25,11 @@ import java.io.IOException;
  */
 public abstract class RabbitMQDomainEventListener<T extends DomainEvent> implements DomainEventListener<T>, InitializingBean {
     private static final Logger logger = LoggerFactory.getLogger(RabbitMQDomainEventListener.class);
-    
+
     private final ObjectMapper objectMapper;
     private final ConnectionFactory connectionFactory;
     private final String queueName;
-    
+
     /**
      * Creates a new RabbitMQDomainEventListener.
      *
@@ -41,7 +41,7 @@ public abstract class RabbitMQDomainEventListener<T extends DomainEvent> impleme
         this.connectionFactory = connectionFactory;
         this.queueName = generateQueueName();
     }
-    
+
     /**
      * Generates a queue name for this listener.
      * The default implementation uses the simple name of the implementing class.
@@ -51,7 +51,7 @@ public abstract class RabbitMQDomainEventListener<T extends DomainEvent> impleme
     protected String generateQueueName() {
         return this.getClass().getSimpleName() + "-queue";
     }
-    
+
     /**
      * Gets the queue name for this listener.
      *
@@ -60,30 +60,30 @@ public abstract class RabbitMQDomainEventListener<T extends DomainEvent> impleme
     public String getQueueName() {
         return queueName;
     }
-    
+
     /**
      * Sets up the RabbitMQ infrastructure (exchange, queue, binding) when the bean is initialized.
      */
     @Override
     public void afterPropertiesSet() {
         RabbitAdmin admin = new RabbitAdmin(connectionFactory);
-        
+
         // Declare the exchange
         TopicExchange exchange = new TopicExchange(getExchange());
         admin.declareExchange(exchange);
-        
+
         // Declare the queue
         Queue queue = new Queue(queueName, true);
         admin.declareQueue(queue);
-        
+
         // Bind the queue to the exchange with the routing key pattern
         Binding binding = BindingBuilder.bind(queue).to(exchange).with(getRoutingKeyPattern());
         admin.declareBinding(binding);
-        
+
         logger.info("Set up RabbitMQ listener for {} on exchange {} with routing key {}",
                 getEventClass().getSimpleName(), getExchange(), getRoutingKeyPattern());
     }
-    
+
     /**
      * Handles incoming messages from RabbitMQ.
      * This method deserializes the message to a domain event and calls the handle method.
@@ -94,13 +94,13 @@ public abstract class RabbitMQDomainEventListener<T extends DomainEvent> impleme
     public void receiveMessage(String message) {
         try {
             logger.debug("Received message: {}", message);
-            
+
             // Deserialize the message to a domain event
             T event = objectMapper.readValue(message, getEventClass());
-            
+
             // Handle the event
             handle(event);
-            
+
             logger.debug("Successfully handled event {}", event.getEventId());
         } catch (IOException e) {
             logger.error("Failed to deserialize message: {}", e.getMessage(), e);

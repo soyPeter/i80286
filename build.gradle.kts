@@ -11,14 +11,44 @@ plugins {
 allprojects {
   group = "io.bitnomio"
   version = "0.0.1-SNAPSHOT"
+  repositories {
+    mavenCentral()
+//    mavenLocal()
+
+//    // Spring repositories para Spring Boot
+//    maven {
+//      name = "spring-milestones"
+//      url = uri("https://repo.spring.io/milestone")
+//    }
+//
+//    // Si usas snapshots
+//    maven {
+//      name = "spring-snapshots"
+//      url = uri("https://repo.spring.io/snapshot")
+//      mavenContent {
+//        snapshotsOnly()
+//      }
+//    }
+  }
+
 }
 
 subprojects {
   apply(plugin = "java")
 
-  repositories {
-    mavenCentral()
+  // Aplicar dependency management a todos los subprojects que lo necesiten
+  afterEvaluate {
+    if (plugins.hasPlugin("io.spring.dependency-management")) {
+      configure<io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension> {
+        imports {
+          mavenBom("org.springframework.boot:spring-boot-dependencies:${libs.versions.springBoot.get()}")
+          mavenBom("org.springframework.cloud:spring-cloud-dependencies:${libs.versions.springCloud.get()}")
+          mavenBom("org.testcontainers:testcontainers-bom:${libs.versions.testcontainers.get()}")
+        }
+      }
+    }
   }
+
 
   configure<JavaPluginExtension> {
     toolchain {

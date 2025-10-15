@@ -10,7 +10,6 @@ plugins {
 
 dependencies {
 
-
   implementation(project(":apps:libs:shared-domain"))
   implementation(project(":apps:libs:shared-api"))
   implementation(project(":apps:libs:shared-infra"))
@@ -18,5 +17,8 @@ dependencies {
 
   developmentOnly(libs.spring.boot.devtools)
 
-  // Common dependencies for the AML bounded context
+  // Common dependencies for the admin bounded context
+
+
+
 }

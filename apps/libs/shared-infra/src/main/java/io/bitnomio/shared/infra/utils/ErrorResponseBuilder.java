@@ -19,23 +19,32 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Utility class for building error responses.
- * Provides methods for creating standardized error responses for different scenarios.
+ * Utility class for building error responses. Provides methods for creating standardized error responses for different
+ * scenarios.
  */
 public final class ErrorResponseBuilder {
 
   private static final Logger logger = LoggerFactory.getLogger(ErrorResponseBuilder.class);
+
   private static final ObjectMapper objectMapper = new ObjectMapper();
 
   // Common error codes
   private static final String SERVICE_UNAVAILABLE_CODE = "SERVICE_UNAVAILABLE";
+
   private static final String VALIDATION_ERROR_CODE = "VALIDATION_ERROR";
+
   private static final String AUTHENTICATION_ERROR_CODE = "AUTHENTICATION_ERROR";
+
   private static final String AUTHORIZATION_ERROR_CODE = "AUTHORIZATION_ERROR";
+
   private static final String RESOURCE_NOT_FOUND_CODE = "RESOURCE_NOT_FOUND";
+
   private static final String RATE_LIMIT_EXCEEDED_CODE = "RATE_LIMIT_EXCEEDED";
+
   private static final String GATEWAY_ERROR_CODE = "GATEWAY_ERROR";
+
   private static final String INTERNAL_ERROR_CODE = "INTERNAL_ERROR";
+
   private static final String CIRCUIT_BREAKER_ERROR_TYPE = "CIRCUIT_BREAKER_ERROR";
 
   // Private constructor to prevent instantiation
@@ -48,10 +57,10 @@ public final class ErrorResponseBuilder {
    *
    * @param exchange  The server web exchange
    * @param requestId The request ID
-   * @return A Mono completing when the response is written
+   * @return A Response
    */
-  public static Mono<Void> createCircuitBreakerErrorResponse(ServerWebExchange exchange, String requestId) {
-    return createCircuitBreakerErrorResponse(exchange, requestId, null);
+  public static void createCircuitBreakerErrorResponse(ServerWebExchange exchange, String requestId) {
+    createCircuitBreakerErrorResponse(exchange, requestId, null);
   }
 
   /**
@@ -60,9 +69,9 @@ public final class ErrorResponseBuilder {
    * @param exchange      The server web exchange
    * @param requestId     The request ID
    * @param customMessage A custom error message (optional)
-   * @return A Mono completing when the response is written
+   * @return A Response
    */
-  public static Mono<Void> createCircuitBreakerErrorResponse(ServerWebExchange exchange, String requestId, String customMessage) {
+  public static void createCircuitBreakerErrorResponse(ServerWebExchange exchange, String requestId, String customMessage) {
     HttpStatus status = HttpStatus.SERVICE_UNAVAILABLE;
 
     try {
@@ -92,10 +101,11 @@ public final class ErrorResponseBuilder {
               .build())
           .build();
 
-      return writeResponse(exchange.getResponse(), standardResponse);
-    } catch (Exception e) {
+      writeResponse(exchange.getResponse(), standardResponse);
+    }
+    catch (Exception e) {
       logger.error("Error creating circuit breaker error response", e);
-      return writeMinimalErrorResponse(exchange.getResponse(), status, requestId);
+      writeMinimalErrorResponse(exchange.getResponse(), status, requestId);
     }
   }
 
@@ -106,9 +116,9 @@ public final class ErrorResponseBuilder {
    * @param serviceName The name of the unavailable service
    * @param requestId   The request ID
    * @param reason      The reason for the service being unavailable
-   * @return A Mono completing when the response is written
+   * @return A Response
    */
-  public static Mono<Void> createServiceUnavailableResponse(
+  public static void createServiceUnavailableResponse(
       ServerWebExchange exchange,
       String serviceName,
       String requestId,
@@ -141,10 +151,11 @@ public final class ErrorResponseBuilder {
               .build())
           .build();
 
-      return writeResponse(response, standardResponse);
-    } catch (Exception e) {
+      writeResponse(response, standardResponse);
+    }
+    catch (Exception e) {
       logger.error("Error creating service unavailable response", e);
-      return writeMinimalErrorResponse(response, status, requestId);
+      writeMinimalErrorResponse(response, status, requestId);
     }
   }
 
@@ -154,14 +165,14 @@ public final class ErrorResponseBuilder {
    * @param exchange  The server web exchange
    * @param status    The HTTP status
    * @param requestId The request ID
-   * @return A Mono completing when the response is written
+   * @return A Response
    */
-  public static Mono<Void> createGenericErrorResponse(
+  public static void createGenericErrorResponse(
       ServerWebExchange exchange,
       HttpStatus status,
       String requestId) {
 
-    return createGenericErrorResponse(exchange, status, requestId, null);
+    createGenericErrorResponse(exchange, status, requestId, null);
   }
 
   /**
@@ -171,9 +182,9 @@ public final class ErrorResponseBuilder {
    * @param status        The HTTP status
    * @param requestId     The request ID
    * @param customMessage A custom error message (optional)
-   * @return A Mono completing when the response is written
+   * @return A Response
    */
-  public static Mono<Void> createGenericErrorResponse(
+  public static StandardResponse<Object> createGenericErrorResponse(
       ServerWebExchange exchange,
       HttpStatus status,
       String requestId,
@@ -202,11 +213,15 @@ public final class ErrorResponseBuilder {
               .build())
           .build();
 
-      return writeResponse(response, standardResponse);
-    } catch (Exception e) {
-      logger.error("Error creating generic error response", e);
-      return writeMinimalErrorResponse(response, status, requestId);
+      writeResponse(response, standardResponse);
+
+      return standardResponse;
     }
+    catch (Exception e) {
+      logger.error("Error creating generic error response", e);
+      writeMinimalErrorResponse(response, status, requestId);
+    }
+    return StandardResponse.error(INTERNAL_ERROR_CODE, "Internal server error", null, null);
   }
 
   /**
@@ -215,9 +230,8 @@ public final class ErrorResponseBuilder {
    * @param response  The server HTTP response
    * @param status    The HTTP status
    * @param requestId The request ID
-   * @return A Mono completing when the response is written
    */
-  private static Mono<Void> writeMinimalErrorResponse(
+  private static StandardResponse<Object> writeMinimalErrorResponse(
       ServerHttpResponse response,
       HttpStatus status,
       String requestId) {
@@ -239,14 +253,18 @@ public final class ErrorResponseBuilder {
 
       byte[] bytes = objectMapper.writeValueAsBytes(standardResponse);
       DataBuffer buffer = response.bufferFactory().wrap(bytes);
-      return response.writeWith(Mono.just(buffer));
-    } catch (Exception e) {
+      response.writeWith(Mono.just(buffer));
+
+      return standardResponse;
+    }
+    catch (Exception e) {
       logger.error("Error writing minimal error response", e);
       byte[] bytes = ("{\"error\":\"Internal server error\",\"requestId\":\"" + requestId + "\"}")
           .getBytes(StandardCharsets.UTF_8);
       DataBuffer buffer = response.bufferFactory().wrap(bytes);
-      return response.writeWith(Mono.just(buffer));
+      response.writeWith(Mono.just(buffer));
     }
+    return StandardResponse.error(INTERNAL_ERROR_CODE, "Internal server error", null, null);
   }
 
   /**
@@ -254,18 +272,18 @@ public final class ErrorResponseBuilder {
    *
    * @param response         The server HTTP response
    * @param standardResponse The standard response to write
-   * @return A Mono completing when the response is written
    */
-  private static Mono<Void> writeResponse(ServerHttpResponse response, Object standardResponse) {
+  private static void writeResponse(ServerHttpResponse response, Object standardResponse) {
     try {
       byte[] bytes = objectMapper.writeValueAsBytes(standardResponse);
       DataBuffer buffer = response.bufferFactory().wrap(bytes);
-      return response.writeWith(Mono.just(buffer));
-    } catch (JsonProcessingException e) {
+      response.writeWith(Mono.just(buffer));
+    }
+    catch (JsonProcessingException e) {
       logger.error("Error serializing response", e);
       byte[] bytes = "{\"error\":\"Internal server error\"}".getBytes(StandardCharsets.UTF_8);
       DataBuffer buffer = response.bufferFactory().wrap(bytes);
-      return response.writeWith(Mono.just(buffer));
+      response.writeWith(Mono.just(buffer));
     }
   }
 
@@ -306,8 +324,7 @@ public final class ErrorResponseBuilder {
   }
 
   /**
-   * Gets the standard error code for an HTTP status.
-   * Public method that can be used by other classes.
+   * Gets the standard error code for an HTTP status. Public method that can be used by other classes.
    *
    * @param status The HTTP status
    * @return The standard error code
@@ -326,8 +343,7 @@ public final class ErrorResponseBuilder {
   }
 
   /**
-   * Gets the standard error message for an HTTP status.
-   * Public method that can be used by other classes.
+   * Gets the standard error message for an HTTP status. Public method that can be used by other classes.
    *
    * @param status The HTTP status
    * @return The standard error message
@@ -347,8 +363,7 @@ public final class ErrorResponseBuilder {
   }
 
   /**
-   * Determines HTTP status from StandardResponse error code.
-   * Public method for use by other response writers.
+   * Determines HTTP status from StandardResponse error code. Public method for use by other response writers.
    *
    * @param code The error code from StandardResponse
    * @return The appropriate HTTP status
@@ -371,12 +386,11 @@ public final class ErrorResponseBuilder {
   /**
    * Creates a validation error response with field details.
    *
-   * @param exchange        The server web exchange
-   * @param requestId       The request ID
+   * @param exchange         The server web exchange
+   * @param requestId        The request ID
    * @param validationErrors Map of field names to error messages
-   * @return A Mono completing when the response is written
    */
-  public static Mono<Void> createValidationErrorResponse(
+  public static StandardResponse<Map<String, Object>> createValidationErrorResponse(
       ServerWebExchange exchange,
       String requestId,
       Map<String, Object> validationErrors) {
@@ -393,7 +407,7 @@ public final class ErrorResponseBuilder {
       Map<String, String> errorInfo = createErrorInfoMap(exchange, status);
       errorInfo.put("validationErrorCount", String.valueOf(validationErrors.size()));
 
-      String message = String.format("Request validation failed. %d field(s) have errors.", 
+      String message = String.format("Request validation failed. %d field(s) have errors.",
           validationErrors.size());
 
       StandardResponse<Map<String, Object>> standardResponse = StandardResponse.<Map<String, Object>>builder()
@@ -406,10 +420,14 @@ public final class ErrorResponseBuilder {
               .build())
           .build();
 
-      return writeResponse(response, standardResponse);
-    } catch (Exception e) {
-      logger.error("Error creating validation error response", e);
-      return writeMinimalErrorResponse(response, status, requestId);
+      writeResponse(response, standardResponse);
+
+      return standardResponse;
     }
+    catch (Exception e) {
+      logger.error("Error creating validation error response", e);
+      writeMinimalErrorResponse(response, status, requestId);
+    }
+    return null;
   }
 }

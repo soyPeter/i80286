@@ -6,7 +6,7 @@
  * Date: 4/8/25 Time: 19:48
  *
  */
-package io.bitnomio.shared.infra.config;
+package io.bitnomio.shared.infra.data.persistence.config;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;

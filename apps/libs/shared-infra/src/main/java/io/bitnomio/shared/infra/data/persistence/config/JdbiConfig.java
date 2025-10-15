@@ -1,4 +1,4 @@
-package io.bitnomio.shared.infra.config;
+package io.bitnomio.shared.infra.data.persistence.config;
 
 import org.jdbi.v3.cache.caffeine.CaffeineCachePlugin;
 import org.jdbi.v3.core.Jdbi;

@@ -6,7 +6,7 @@
  * Date: 4/8/25 Time: 18:41
  *
  */
-package io.bitnomio.shared.infra.config;
+package io.bitnomio.shared.infra.data.persistence.config;
 
 import io.bitnomio.shared.infra.utils.MdcUtils;
 import org.jdbi.v3.core.statement.Binding;
