@@ -1,7 +1,7 @@
 plugins {
     java
     alias(libs.plugins.spring.boot)
-    alias(libs.plugins.spring.dependency.management)
+    alias(libs.plugins.dependency.management)
     alias(libs.plugins.flyway)
 }
 
@@ -11,8 +11,9 @@ version = "0.0.1-SNAPSHOT"
 dependencies {
     // Common libraries
     implementation(project(":services:libs:common-domain"))
-    implementation(project(":services:libs:common-application"))
-    implementation(project(":services:libs:common-infrastructure"))
+    implementation(project(":apps:libs:shared-api"))
+    implementation(project(":apps:libs:shared-domain"))
+    implementation(project(":apps:libs:shared-infra"))
 
     // Spring Boot Core
     implementation(libs.bundles.spring.boot)

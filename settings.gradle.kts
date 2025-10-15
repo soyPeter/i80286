@@ -1,45 +1,57 @@
 rootProject.name = "blueprint-80286"
 
-//// Enable version catalog
-//enableFeaturePreview("VERSION_CATALOGS")
 
-// Common libraries
-include(":services:libs:common-domain")
-include(":services:libs:common-application")
-include(":services:libs:common-infrastructure")
-include(":services:libs:common-contracts")
+pluginManagement {
+  repositories {
+    gradlePluginPortal()
+//        maven {
+//            url = uri("http://localhost:8081/repository/maven-public/")
+//            isAllowInsecureProtocol = true
+//            credentials {
+//                username = "admin"
+//                password = "admin"
+//            }
+//        }
+  }
+}
 
-// Services
-include(":services:customer")
-include(":services:user")
-include(":services:admin")
-include(":services:attendance")
-include(":services:reports")
-include(":services:security")
+dependencyResolutionManagement {
+  repositories {
+    mavenCentral()
+  }
+}
 
-// Service Registry
-//include("service-registry")
+// Librerías compartidas entre TODOS los bounded contexts
+include("apps:libs:shared-domain")     // Value Objects, interfaces y conceptos comunes
+include("apps:libs:shared-infra")      // Configuraciones, adaptadores base, utils
+include("apps:libs:shared-api")        // DTOs comunes, validaciones cross-domain
 
-// Build tools
-//include("build-tools:checkstyle")
-//include("build-tools:spotless")
-//include("build-tools:test-common")
+// Bounded Context: FDE (ACTUAL - migración completa)
+include("apps:admin")
+include("apps:admin:domain")
+include("apps:admin:app")
+include("apps:admin:infra")
 
-// Configure project structure
-project(":services:customer").projectDir = file("services/customer")
-project(":services:user").projectDir = file("services/user")
-project(":services:admin").projectDir = file("services/admin")
-project(":services:attendance").projectDir = file("services/attendance")
-project(":services:reports").projectDir = file("services/reports")
-project(":services:security").projectDir = file("services/security")
-
-
-
-project(":services:libs:common-domain").projectDir = file("services/libs/common-domain")
-project(":services:libs:common-application").projectDir = file("services/libs/common-application")
-project(":services:libs:common-infrastructure").projectDir = file("services/libs/common-infrastructure")
-project(":services:libs:common-contracts").projectDir = file("services/libs/common-contracts")
+//// Bounded Context: AML (FUTURO - placeholder para preparar)
+include("apps:aml")
+include("apps:aml:app")
+include("apps:aml:domain")
+include("apps:aml:infra")
 //
-//project(":build-tools:checkstyle").projectDir = file("build-tools/checkstyle")
-//project(":build-tools:spotless").projectDir = file("build-tools/spotless")
-//project(":build-tools:test-common").projectDir = file("build-tools/test-common")
+//// Bounded Context: PBC (FUTURO - placeholder)
+//include("apps:pbc")
+//include("apps:pbc:domain")
+//include("apps:pbc:application")
+//include("apps:pbc:infrastructure")
+//
+//// Bounded Context: Rules Management (FUTURO)
+//include("apps:rules-management")
+//include("apps:rules-management:domain")
+//include("apps:rules-management:application")
+//include("apps:rules-management:infrastructure")
+//
+//// Bounded Context: Gateway/Orchestrator (FUTURO)
+//include("apps:gateway")
+//include("apps:gateway:domain")
+//include("apps:gateway:application")
+//include("apps:gateway:infrastructure")

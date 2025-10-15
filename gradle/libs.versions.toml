@@ -49,10 +49,12 @@ spring-boot-starter = { module = "org.springframework.boot:spring-boot-starter" 
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
 spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
 spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator" }
+spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
 spring-boot-starter-amqp = { module = "org.springframework.boot:spring-boot-starter-amqp" }
 spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "springBoot" }
 spring-boot-starter-jdbc = { module = "org.springframework.boot:spring-boot-starter-jdbc", version.ref = "springBoot" } # Brings HikariCP
 spring-boot-starter-aop = { module = "org.springframework.boot:spring-boot-starter-aop", version.ref = "springBoot" } # For Resilience4j annotations
+
 reactor-core = { module = "io.projectreactor:reactor-core", version.ref = "reactor" }
 
 # Spring Cloud
@@ -77,12 +79,13 @@ jdbi-stringtemplate = { module = "org.jdbi:jdbi3-stringtemplate4", version.ref =
 # Database
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
 flyway-core = { module = "org.flywaydb:flyway-core" }
+flyway-postgresql = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" } # Flyway specific to PostgreSQL
 
 # Resilience4j
-#resilience4j-spring-boot3 = { module = "io.github.resilience4j:resilience4j-spring-boot3", version.ref = "resilience4j" }
-#resilience4j-bulkhead = { module = "io.github.resilience4j:resilience4j-bulkhead", version.ref = "resilience4j" }
-#resilience4j-ratelimiter = { module = "io.github.resilience4j:resilience4j-ratelimiter", version.ref = "resilience4j" }
-#resilience4j-retry = { module = "io.github.resilience4j:resilience4j-retry", version.ref = "resilience4j" }
+resilience4j-spring-boot3 = { module = "io.github.resilience4j:resilience4j-spring-boot3", version.ref = "resilience4j" }
+resilience4j-bulkhead = { module = "io.github.resilience4j:resilience4j-bulkhead", version.ref = "resilience4j" }
+resilience4j-ratelimiter = { module = "io.github.resilience4j:resilience4j-ratelimiter", version.ref = "resilience4j" }
+resilience4j-retry = { module = "io.github.resilience4j:resilience4j-retry", version.ref = "resilience4j" }
 
 # Utilities
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
@@ -123,15 +126,31 @@ spring-boot = [
     "spring-boot-starter-web",
     "spring-boot-starter-validation",
     "spring-boot-starter-actuator",
-    "spring-boot-starter-jdbc",
-    "spring-boot-starter-amqp"
+#  "spring-boot-starter-jdbc",
+#  "spring-boot-starter-amqp"
 ]
+
+postgres-flyway-jdbi = [
+  "postgresql",
+  "flyway-core",
+  "flyway-postgresql",
+  "jdbi-core",
+  "jdbi-objects",
+  "jdbi-postgres",
+  "jdbi-jackson2",
+  "jdbi-spring",
+  "jdbi-caffeine-cache",
+  "jdbi-opentelemetry",
+  "jdbi-commons-text",
+  "jdbi-stringtemplate"
+]
+
 resilience4j = [
-#    "spring-cloud-starter-circuitbreaker-resilience4j",
-#    "resilience4j-spring-boot3",
-#    "resilience4j-bulkhead",
-#    "resilience4j-ratelimiter",
-#    "resilience4j-retry"
+    "spring-cloud-starter-circuitbreaker-resilience4j",
+    "resilience4j-spring-boot3",
+    "resilience4j-bulkhead",
+    "resilience4j-ratelimiter",
+    "resilience4j-retry"
 ]
 testing = [
     "spring-boot-starter-test",
@@ -143,7 +162,7 @@ testing = [
 
 [plugins]
 spring-boot = { id = "org.springframework.boot", version.ref = "springBoot" }
-spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "springDependencyManagement" }
+dependency-management = { id = "io.spring.dependency-management", version.ref = "springDependencyManagement" }
 flyway = { id = "org.flywaydb.flyway", version.ref = "flyway" }
 foojay-resolver = { id = "org.gradle.toolchains.foojay-resolver", version.ref = "fooJayResolver" }
 jvm-toolchains = { id = "org.jetbrains.kotlin.jvm.toolchains", version.ref = "kotlin" } # Not really a plugin, but used to set JVM toolchains

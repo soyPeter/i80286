@@ -1,0 +1,12 @@
+# src/main/resources/application-test.yml
+spring:
+  flyway:
+    enabled: true # Ensure Flyway runs in tests
+    clean-disabled: false # Allow Flyway to clean DB for tests (use with caution in non-test envs!)
+    baseline-on-migrate: true # Important for new/empty test databases
+logging:
+  level:
+    com.example.fraud: DEBUG
+    org.jdbi: DEBUG
+    com.zaxxer.hikari: DEBUG
+    org.testcontainers: INFO # See Testcontainers logs

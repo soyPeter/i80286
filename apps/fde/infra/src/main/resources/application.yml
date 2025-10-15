@@ -1,0 +1,140 @@
+# src/main/resources/application.yml
+spring:
+  application:
+    name: fraud-detection-engine
+  profiles:
+    active: dev
+  # Spring AMQP (RabbitMQ) configuration
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+  # --- Datasource for Write Operations (Command Side) ---
+  datasource:
+    command:
+      # Database URL: Use ENV_VAR `SPRING_DATASOURCE_COMMAND_URL` with a default for local Docker Compose setup
+      url: ${SPRING_DATASOURCE_COMMAND_URL:jdbc:postgresql://localhost:5432/fde_command_db}
+      # Username: Use ENV_VAR `SPRING_DATASOURCE_COMMAND_USERNAME` with a default
+      username: ${SPRING_DATASOURCE_COMMAND_USERNAME:fde_writer}
+      # Password: Use ENV_VAR `SPRING_DATASOURCE_COMMAND_PASSWORD` with a default
+      password: ${SPRING_DATASOURCE_COMMAND_PASSWORD:your_local_writer_password} # IMPORTANT: Change this default for local
+      driver-class-name: org.postgresql.Driver
+      hikari:
+        pool-name: CommandHikariPool
+        maximum-pool-size: ${COMMAND_DB_POOL_MAX_SIZE:10}
+        minimum-idle: ${COMMAND_DB_POOL_MIN_IDLE:5}
+        idle-timeout: ${COMMAND_DB_POOL_IDLE_TIMEOUT:30000} # 30 seconds
+        connection-timeout: ${COMMAND_DB_CONNECTION_TIMEOUT:30000} # 30 seconds
+        max-lifetime: ${COMMAND_DB_MAX_LIFETIME:1800000} # 30 minutes
+        leak-detection-threshold: ${COMMAND_DB_LEAK_DETECTION_THRESHOLD:2000} # 2 seconds
+        connection-test-query: SELECT 1
+
+    # --- Datasource for Read Operations (Query Side) ---
+    query:
+      # Database URL: Use ENV_VAR `SPRING_DATASOURCE_QUERY_URL` with a default for local Docker Compose setup (e.g., a replica)
+      url: ${SPRING_DATASOURCE_QUERY_URL:jdbc:postgresql://localhost:5433/fde_query_db}
+      # Username: Use ENV_VAR `SPRING_DATASOURCE_QUERY_USERNAME` with a default
+      username: ${SPRING_DATASOURCE_QUERY_USERNAME:fde_reader}
+      # Password: Use ENV_VAR `SPRING_DATASOURCE_QUERY_PASSWORD` with a default
+      password: ${SPRING_DATASOURCE_QUERY_PASSWORD:your_local_reader_password} # IMPORTANT: Change this default for local
+      driver-class-name: org.postgresql.Driver
+      hikari:
+        pool-name: QueryHikariPool
+        maximum-pool-size: ${QUERY_DB_POOL_MAX_SIZE:20}
+        minimum-idle: ${QUERY_DB_POOL_MIN_IDLE:10}
+        idle-timeout: ${QUERY_DB_POOL_IDLE_TIMEOUT:60000}
+        connection-timeout: ${QUERY_DB_CONNECTION_TIMEOUT:30000}
+        max-lifetime: ${QUERY_DB_MAX_LIFETIME:1800000}
+        leak-detection-threshold: ${QUERY_DB_LEAK_DETECTION_THRESHOLD:2000}
+        connection-test-query: SELECT 1
+        
+    # --- Datasource for Shared Data (Cross-Context) ---
+    shared:
+      # Database URL: Use ENV_VAR `SPRING_DATASOURCE_SHARED_URL` with a default for local Docker Compose setup
+      url: ${SPRING_DATASOURCE_SHARED_URL:jdbc:postgresql://localhost:5438/shared_db}
+      # Username: Use ENV_VAR `SPRING_DATASOURCE_SHARED_USERNAME` with a default
+      username: ${SPRING_DATASOURCE_SHARED_USERNAME:shared_user}
+      # Password: Use ENV_VAR `SPRING_DATASOURCE_SHARED_PASSWORD` with a default
+      password: ${SPRING_DATASOURCE_SHARED_PASSWORD:your_local_shared_password} # IMPORTANT: Change this default for local
+      driver-class-name: org.postgresql.Driver
+      hikari:
+        pool-name: SharedHikariPool
+        maximum-pool-size: ${SHARED_DB_POOL_MAX_SIZE:10}
+        minimum-idle: ${SHARED_DB_POOL_MIN_IDLE:5}
+        idle-timeout: ${SHARED_DB_POOL_IDLE_TIMEOUT:30000} # 30 seconds
+        connection-timeout: ${SHARED_DB_CONNECTION_TIMEOUT:30000} # 30 seconds
+        max-lifetime: ${SHARED_DB_MAX_LIFETIME:1800000} # 30 minutes
+        leak-detection-threshold: ${SHARED_DB_LEAK_DETECTION_THRESHOLD:2000} # 2 seconds
+        connection-test-query: SELECT 1
+
+# Server config
+server:
+  port: ${SERVER_PORT:8080}
+
+
+# Flyway configuration
+flyway:
+  # Command database migrations
+  command:
+    url: ${spring.datasource.command.url}
+    user: ${spring.datasource.command.username}
+    password: ${spring.datasource.command.password}
+    locations: ${FLYWAY_COMMAND_MIGRATION_LOCATIONS:classpath:db/migration/command}
+    baseline-on-migrate: true
+    
+  # Shared database migrations (for cross-context data)
+  shared:
+    url: ${spring.datasource.shared.url}
+    user: ${spring.datasource.shared.username}
+    password: ${spring.datasource.shared.password}
+    locations: ${FLYWAY_SHARED_MIGRATION_LOCATIONS:classpath:db/migration/shared}
+    baseline-on-migrate: true
+  cloud:
+    config:
+      enabled: false  # Deshabilita Spring Cloud Config
+      import-check:
+        enabled: false  # Deshabilita la verificación de importación
+logging:
+  level:
+    com.example.fraud: ${LOGGING_LEVEL_APP:DEBUG}
+    org.springframework: ${LOGGING_LEVEL_SPRING:INFO}
+    org.jdbi: ${LOGGING_LEVEL_JDBI:DEBUG}
+    com.zaxxer.hikari: ${LOGGING_LEVEL_HIKARI:DEBUG}
+    org.flywaydb: ${LOGGING_LEVEL_FLYWAY:INFO}
+
+
+# Spring Cloud Config (for externalized configuration, if used)
+# Note: This will override local defaults if a config server is active
+# spring:
+#   config:
+#     import: optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888}
+
+# Spring Boot Actuator (for health checks and metrics)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, prometheus, circuitbreakers, retries, ratelimiters, bulkheads
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+    circuitbreakers:
+      enabled: true
+    retries:
+      enabled: true
+    ratelimiters:
+      enabled: true
+    bulkheads:
+      enabled: true
+###
+
+fraud:
+  engine:
+    thresholds:
+      deny: ${FRAUD_THRESHOLD_DENY:100.0}
+      flag: ${FRAUD_THRESHOLD_FLAG:60.0}
