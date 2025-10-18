@@ -25,18 +25,18 @@ include("apps:libs:shared-api")        // DTOs comunes, validaciones cross-domai
 include("apps:libs:shared-domain")     // Value Objects, interfaces y conceptos comunes
 include("apps:libs:shared-infra")      // Configuraciones, adaptadores base, utils
 
-// Bounded Context: FDE (ACTUAL - migración completa)
-//include("apps:admin")
-//include("apps:admin:domain")
-//include("apps:admin:app")
-//include("apps:admin:infra")
+// Bounded Context: ADMIN
+include("apps:admin")
+include("apps:admin:domain")
+include("apps:admin:app")
+include("apps:admin:infra")
 //
-////// Bounded Context: AML (FUTURO - placeholder para preparar)
-//include("apps:aml")
-//include("apps:aml:app")
-//include("apps:aml:domain")
-//include("apps:aml:infra")
-//
+// Bounded Context: AML (FUTURO - placeholder para preparar)
+include("apps:aml")
+include("apps:aml:app")
+include("apps:aml:domain")
+include("apps:aml:infra")
+
 //// Bounded Context: PBC (FUTURO - placeholder)
 //include("apps:pbc")
 //include("apps:pbc:domain")

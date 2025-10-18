@@ -1,10 +1,17 @@
 // Root build file for AML bounded context
-// This is a placeholder for future implementation
-
 plugins {
-    id("java")
+  id("java")
+  id("org.springframework.boot")
+  id("io.spring.dependency-management")
+  id("com.github.spotbugs")
 }
 
+
 dependencies {
-    // Common dependencies for the AML bounded context
+  implementation(project(":apps:libs:shared-domain"))
+  implementation(project(":apps:libs:shared-api"))
+  implementation(project(":apps:libs:shared-infra"))
+
+
+  developmentOnly(libs.spring.boot.devtools)
 }

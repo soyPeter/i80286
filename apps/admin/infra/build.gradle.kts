@@ -1,4 +1,10 @@
 // AML Infrastructure module - Placeholder for future implementation
+plugins {
+  id("java")
+  id("org.springframework.boot")
+  id("io.spring.dependency-management")
+  id("com.github.spotbugs")
+}
 
 dependencies {
   // Internal dependencies
