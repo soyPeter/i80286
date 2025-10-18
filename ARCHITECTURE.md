@@ -1,3 +1,155 @@
+# Arquitectura Blueprint 80286
+
+Objetivo: Documentar la arquitectura hexagonal y la estructura DDD aplicada en este monorepo, con énfasis en separación de capas, contratos, convenciones de nombrado y estándares de testing, alineados con Java 25, Spring Boot 4.0.0-M3 y Gradle 9.1.0.
+
+
+1. Principios de Arquitectura
+- Hexagonal (Ports & Adapters): el dominio es independiente de frameworks; la comunicación se realiza a través de puertos definidos en el dominio/aplicación e implementados por adaptadores de infraestructura.
+- DDD: modelado por bounded contexts; entidades ricas; value objects inmutables; agregados con invariantes; eventos de dominio cuando aplica.
+- Unidireccionalidad: dominio no depende de aplicación ni infraestructura; aplicación no depende de infraestructura.
+- Configuración por contrato: entradas/salidas definidas por interfaces (puertos) y DTOs.
+
+
+2. Stack Tecnológico
+- Java 25 (Gradle toolchains)
+- Spring Boot 4.0.0-M3; Spring MVC/WebFlux según necesidad; Actuator; Micrometer.
+- Persistencia: PostgreSQL (Flyway para migraciones). Alternativas JDBI/JPA según contexto.
+- Mensajería: RabbitMQ (si aplica en el contexto).
+- Resiliencia: Resilience4j (circuit breaker, retry, rate limiting, bulkhead).
+- Build: Gradle Kotlin DSL; Version Catalog (libs.versions.toml).
+- Testing: JUnit 5, AssertJ, Mockito, Testcontainers.
+
+
+3. Hexagonal Architecture (aplicada)
+- Dominio (core):
+  - Contiene entidades, value objects, servicios de dominio, reglas e invariantes.
+  - Define puertos de salida necesarios (interfaces) desde la perspectiva del negocio.
+- Aplicación:
+  - Orquesta casos de uso (commands/queries) a través de puertos de entrada.
+  - Mapea DTOs ↔ dominio y coordina transacciones.
+- Infraestructura:
+  - Adaptadores primarios: REST controllers, consumidores de mensajes.
+  - Adaptadores secundarios: persistencia (JPA/JDBI), clientes HTTP, mensajería, etc.
+  - Configuración técnica aislada.
+
+Diagrama (simplificado):
+```
+[Adapter In] -> (Ports In) -> [Application UC] -> (Ports Out) -> [Adapter Out]
+                           ^                         |
+                           |                         v
+                         [Domain] <--------------------
+```
+
+
+4. Estructura DDD por módulo
+Cada bounded context en apps/<contexto> se divide en tres submódulos: domain, app, infra.
+
+Ejemplo general:
+```
+apps/<contexto>/
+  ├─ domain/
+  │   ├─ model/
+  │   │   ├─ entity/
+  │   │   └─ vo/
+  │   ├─ repository/        # Puertos (interfaces) para persistencia u otros servicios
+  │   ├─ service/           # Lógica de dominio que no cabe en entidades
+  │   └─ event/             # Eventos de dominio (si aplica)
+  ├─ app/
+  │   ├─ usecase/           # Commands/Queries
+  │   ├─ dto/               # Objetos de transferencia
+  │   ├─ port/              # input/output
+  │   ├─ mapper/
+  │   └─ service/           # Orquestación de casos de uso
+  └─ infra/
+      ├─ adapter/
+      │   ├─ input/ (rest, messaging)
+      │   └─ output/ (persistence, http)
+      └─ config/
+```
+
+Módulos compartidos en apps/libs:
+- shared-domain: Value Objects comunes, errores y contratos de dominio compartidos.
+- shared-api: DTOs comunes, validaciones, contratos de API.
+- shared-infra: configuración técnica compartida y adaptadores base.
+
+
+5. Separación de responsabilidades
+- Dominio: reglas de negocio, invariantes y decisión del lenguaje ubicuo. No depende de frameworks.
+- Aplicación: orquestación, transacciones, coordinación de puertos. Mínima lógica de negocio.
+- Infraestructura: detalles técnicos, traducción de protocolos, implementación de puertos.
+
+
+6. Convenciones de naming y organización
+- Entidades: singular (User, Customer).
+- Value Objects: descriptivos e inmutables (EmailAddress, PhoneNumber).
+- Repositorios (puertos dominio): prefijo I + Entidad + Repository (IUserRepository).
+- Implementaciones (infra): Entidad + Repository + Sufijo tecnológico (UserRepositoryJpa/UserRepositoryJdbi).
+- Casos de uso: Verbo en infinitivo + Sustantivo (CreateUserUseCase, FindUserByIdUseCase).
+- Paquetes por capa dentro del contexto: domain.*, app.*, infra.*.
+- DTOs de entrada/salida en adaptadores REST con sufijos Req/Res cuando aplique.
+
+
+7. Patrones aplicados y recomendaciones
+- Factory Method: para creación compleja de entidades/VOs.
+- Repository: puertos en dominio, implementaciones en infra.
+- Command/Query (CQRS lite): separar comandos de consultas en casos de uso.
+- Dependency Injection: por constructor; evitar @Autowired en campos/setters.
+- Specification: para reglas de negocio complejas y filtrado.
+- Resiliencia: timeouts, retries, CB, bulkheads en adaptadores externos.
+- Idempotencia: especialmente en comandos expuestos vía HTTP/mensajería.
+
+
+8. Estándares de testing por capas
+- Dominio: tests unitarios puros; 80%+ cobertura mínima.
+- Aplicación: tests unitarios de casos de uso con dobles de puertos; pruebas transaccionales cuando aplique.
+- Infraestructura: tests de integración por adaptador con Testcontainers (Postgres, RabbitMQ). Tests de contrato si hay interacción entre servicios.
+- Arquitectura: tests de arquitectura para asegurar dependencias unidireccionales y cumplimiento de reglas hexagonales.
+
+Buenas prácticas:
+- TDD para componentes críticos.
+- Fixtures reutilizables y datos deterministas.
+- Mockear dependencias externas en tests unitarios; usar Testcontainers en integración.
+
+
+9. Microservicios: buenas prácticas
+- Bounded contexts bien delimitados; despliegue independiente por servicio.
+- APIs REST pequeñas, versionadas (v1, v2) y documentadas (OpenAPI).
+- Configuración externalizada por entorno (12-factor app). Secretos gestionados de forma segura.
+- Observabilidad: Actuator, Micrometer, logs estructurados (MDC), tracing distribuido.
+- Tolerancia a fallos: Circuit Breaker, Retry, Rate Limiting, Bulkhead. Timeouts obligatorios en clientes externos.
+- Backward compatibility en contratos; gestión de deprecaciones.
+
+
+10. Integración con el repositorio
+- Toolchains Java 25 activas via Gradle.
+- Versiones gestionadas en gradle/libs.versions.toml (Spring Boot 4.0.0-M3, Spring Cloud 2023.0.0, Micrometer 1.14.x, Testcontainers 1.19.x, Flyway 11.x, PostgreSQL 42.7.x).
+- Módulos declarados en settings.gradle.kts:
+  - libs: apps:libs:shared-api, apps:libs:shared-domain, apps:libs:shared-infra
+  - contexts: apps:admin, apps:aml, apps:attendance, apps:customer, apps:fde, apps:report, apps:security, apps:user (cada uno con :domain, :app, :infra)
+
+
+11. Ejemplo práctico (REST → Caso de uso → Dominio → Repositorio)
+```
+POST /api/v1/users
+  UserController (infra/adapter/input/rest)
+    -> CreateUserUseCase (app/usecase/command)
+      -> IUserRepository (domain/repository)
+        -> UserRepositoryJpa (infra/adapter/output/persistence)
+```
+
+DTOs: UserCreateReq (entrada) / UserRes (salida). El mapeo entre DTO y dominio se realiza en el caso de uso o mediante mapper dedicado en app.
+
+
+12. Diagramas y referencias
+- Usa C4 (Context, Container, Component) para documentar vistas.
+- Mantén ejemplos ASCII simples en README/ARCHITECTURE para orientación rápida.
+- Referencias: Evans (DDD), Vernon (IDDD), Cockburn (Hexagonal Architecture), documentación oficial de Spring/Resilience4j/Testcontainers.
+
+
+---
+
+## Anexo (contenido anterior - desactualizado)
+
 ## Objetivo:
 Diseñar un sistema basado en arquitectura hexagonal y principios DDD usando Spring Boot 3 para implementar servicios REST.
 ## 1. CONTEXTO:
