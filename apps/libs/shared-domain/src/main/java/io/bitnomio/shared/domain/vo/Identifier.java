@@ -9,13 +9,25 @@
  */
 package io.bitnomio.shared.domain.vo;
 
+import io.hypersistence.tsid.TSID;
+
 import java.util.Objects;
 
 public record Identifier(String value) {
+
   public Identifier {
     Objects.requireNonNull(value);
     if (value.isBlank())
       throw new IllegalArgumentException("Identifier cannot be blank");
   }
+
+  public long getInternalId() {
+    return TSID.from(value).toLong();
+  }
+
+  public String getPublicId() {
+    return TSID.from(value).toString();
+  }
+
 }
 

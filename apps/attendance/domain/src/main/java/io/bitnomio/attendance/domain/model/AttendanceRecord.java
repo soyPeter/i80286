@@ -1,19 +1,12 @@
-/*
- * COPYRIGHT 2020 -2025 original authors
- * mailto:bitnomio-backend@bitnomio.io
- *
- * blueprint-80286 - Created by pedro.almendro@bitnomio
- * Date: 11/10/25 Time: 19:42
- *
- * PLEASE ADD HERE A BRIEF DESCRIPTION!!! :D
- */
+
 package io.bitnomio.attendance.domain.model;
 
-import com.company.common.domain.model.vo.AttendanceStatus;
-import com.company.common.domain.model.vo.Identifier;
-import com.company.common.domain.model.vo.RecordType;
-import com.company.common.domain.model.vo.TimeRange;
-import com.company.common.domain.model.vo.ValidationStatus;
+
+import io.bitnomio.shared.domain.vo.AttendanceStatus;
+import io.bitnomio.shared.domain.vo.Identifier;
+import io.bitnomio.shared.domain.vo.RecordType;
+import io.bitnomio.shared.domain.vo.TimeRange;
+import io.bitnomio.shared.domain.vo.ValidationStatus;
 
 import java.time.LocalDate;
 import java.time.Instant;

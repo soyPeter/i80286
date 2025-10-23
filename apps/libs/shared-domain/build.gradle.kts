@@ -6,6 +6,7 @@ dependencies {
 //  implementation(libs.bundles.spring.boot)
 
   implementation(libs.jakarta.validation.api)
+  implementation(libs.tsid)
 
 //    testImplementation(libs.junit.jupiter.api)
     testImplementation(libs.assertj.core)

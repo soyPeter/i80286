@@ -9,9 +9,9 @@
  */
 package io.bitnomio.attendance.domain.model;
 
-import com.company.common.domain.model.vo.Identifier;
-import com.company.common.domain.model.vo.ScheduleException;
-import com.company.common.domain.model.vo.WorkdayTemplate;
+import io.bitnomio.shared.domain.vo.Identifier;
+import io.bitnomio.shared.domain.vo.ScheduleException;
+import io.bitnomio.shared.domain.vo.WorkdayTemplate;
 
 import java.util.List;
 

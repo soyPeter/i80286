@@ -127,10 +127,10 @@ testcontainers-rabbitmq = { module = "org.testcontainers:rabbitmq", version.ref 
 spring-boot = [
   "spring-boot-starter-web",
   "spring-boot-starter-webmvc",
-#  "spring-boot-http-web",
-#  "spring-boot-starter-validation",
-#  "spring-boot-starter-actuator",
-#  "spring-boot-starter-aop"
+  "spring-boot-http-web",
+  "spring-boot-starter-validation",
+  "spring-boot-starter-actuator",
+  "spring-boot-starter-aop"
 ]
 
 postgres-flyway-jdbi = [

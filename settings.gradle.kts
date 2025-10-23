@@ -37,6 +37,11 @@ include("apps:aml:app")
 include("apps:aml:domain")
 include("apps:aml:infra")
 
+include("apps:attendance")
+include("apps:attendance:app")
+include("apps:attendance:domain")
+include("apps:attendance:infra")
+
 //// Bounded Context: PBC (FUTURO - placeholder)
 //include("apps:pbc")
 //include("apps:pbc:domain")

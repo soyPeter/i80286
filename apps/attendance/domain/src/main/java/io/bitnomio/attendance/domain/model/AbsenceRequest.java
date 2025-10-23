@@ -9,10 +9,10 @@
  */
 package io.bitnomio.attendance.domain.model;
 
-import com.company.common.domain.model.vo.AbsenceReason;
-import com.company.common.domain.model.vo.DateRange;
-import com.company.common.domain.model.vo.Identifier;
-import com.company.common.domain.model.vo.ValidationStatus;
+import io.bitnomio.shared.domain.vo.AbsenceReason;
+import io.bitnomio.shared.domain.vo.DateRange;
+import io.bitnomio.shared.domain.vo.Identifier;
+import io.bitnomio.shared.domain.vo.ValidationStatus;
 
 import java.time.Instant;
 import java.util.Optional;
